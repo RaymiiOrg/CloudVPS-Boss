@@ -1,6 +1,7 @@
 #!/bin/bash
 # SwiftBackup - Duplicity wrapper to back up to OpenStack Swift, Object 
-# Store. Copyright (C) 2014 Remy van Elst, https://raymii.org
+# Store. Copyright (C) 2014 CloudVPS. 
+# Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
 # under the terms of the GNU General Public License as published by the 
