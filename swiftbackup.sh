@@ -71,7 +71,6 @@ DUPLICITY_OUTPUT=$(duplicity \
     --asynchronous-upload \
     --file-prefix="${HOSTNAME}." \
     --exclude-device-files \
-    --volsize 250 \
     --exclude-globbing-filelist /etc/swiftbackup/exclude.conf \
     --full-if-older-than "${FULL_IF_OLDER_THAN}" \
     / \
