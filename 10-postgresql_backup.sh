@@ -58,7 +58,7 @@ if [[ $? -ne 0 ]]; then
     PSQLD=1
 fi
 
-if [[ "${PSQLD}" != 1 ]]; then
+if [[ "${PSQLD}" == 1 ]]; then
     lecho "psql, pg_dump or pg_dumpall not found, not dumping postgresql."
     exit
 fi
