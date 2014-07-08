@@ -45,6 +45,26 @@ if [[ "${EUID}" -ne 0 ]]; then
    exit 1
 fi
 
+command -v psql >/dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    PSQLD=1
+fi
+
+command -v pg_dump >/dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    PSQLD=1
+fi
+
+command -v pg_dumpall >/dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    PSQLD=1
+fi
+
+if [[ "${PSQLD}" != 1 ]]; then
+    lecho "psql, pg_dump or pg_dumpall not found, not dumping postgresql."
+    exit
+fi
+
 if [[ ! -d "/var/backups/sql" ]]; then
     mkdir -p "/var/backups/sql"
 fi
