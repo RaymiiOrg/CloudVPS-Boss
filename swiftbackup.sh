@@ -53,12 +53,18 @@ source /etc/swiftbackup/backup.conf
 
 echo
 lecho "Running pre-backup scripts from /etc/swiftbackup/pre-backup.d/"
-find /etc/swiftbackup/pre-backup.d/ -maxdepth 1 -type f -perm +111 -exec {} \; 2>&1
-if [[ $? -ne 0 ]]; then
-    # fedora > 19 has newer find.
-    find /etc/swiftbackup/pre-backup.d/ -maxdepth 1 -type f -perm /111 -exec {} \;
-fi
-    
+for SCRIPT in /etc/swiftbackup/pre-backup.d/*; do
+    if [[ ! -d "${SCRIPT}" ]]; then
+        if [[ -x "${SCRIPT}" ]]; then
+            "${SCRIPT}"
+            if [[ $? -ne 0 ]]; then
+                lerror "Pre backup script ${SCRIPT} failed."
+            fi
+        fi
+    fi
+done
+
+
 echo
 lecho "SwiftBackup ${VERSION} started on $(date)."
 lecho "Full if last full is older than: ${FULL_IF_OLDER_THAN} and keep at max ${FULL_TO_KEEP} full backups."
@@ -81,11 +87,13 @@ if [[ $? -ne 0 ]]; then
     done
     lerror "SwiftBackup to Object Store FAILED!. Please check server $(uname -n)."
     lerror "Running post-fail-backup scripts from /etc/swiftbackup/post-fail-backup.d/"
-    find /etc/swiftbackup/post-fail-backup.d/ -maxdepth 1 -type f -perm +111 -exec {} \; 2>&1
-    if [[ $? -ne 0 ]]; then
-        # fedora > 19 has newer find.
-        find /etc/swiftbackup/post-fail-backup.d/ -maxdepth 1 -type f -perm /111 -exec {} \;
-    fi
+    for SCRIPT in /etc/swiftbackup/post-fail-backup.d/*; do
+        if [[ ! -d "${SCRIPT}" ]]; then
+            if [[ -x "${SCRIPT}" ]]; then
+                "${SCRIPT}" || lerror "Post fail backup script ${SCRIPT} failed."
+            fi
+        fi
+    done
     exit 1
 fi
 
@@ -112,11 +120,16 @@ if [[ $? -ne 0 ]]; then
     done
     lerror "SwiftCleanup FAILED!. Please check server ${HOSTNAME}." 
     lerror "Running post-fail-backup scripts from /etc/swiftbackup/post-fail-backup.d/"
-    find /etc/swiftbackup/post-fail-backup.d/ -maxdepth 1 -type f -perm +111 -exec {} \; 2>&1
-    if [[ $? -ne 0 ]]; then
-        #fedora > 19 has newer find.
-        find /etc/swiftbackup/post-fail-backup.d/ -maxdepth 1 -type f -perm /111 -exec {} \;
+    for SCRIPT in /etc/swiftbackup/post-fail-backup.d/*; do
+    if [[ ! -d "${SCRIPT}" ]]; then
+        if [[ -x "${SCRIPT}" ]]; then
+            "${SCRIPT}" || lerror "Post fail backup script ${SCRIPT} failed."
+            if [[ $? -ne 0 ]]; then
+                lerror "Post fail backup script ${SCRIPT} failed."
+            fi
+        fi
     fi
+    done
     exit 1
 fi
 
@@ -127,11 +140,13 @@ IFS="${OLD_IFS}"
 
 echo
 lecho "Running post-backup scripts from /etc/swiftbackup/post-backup.d/"
-find /etc/swiftbackup/post-backup.d/ -maxdepth 1 -type f -perm +111 -exec {} \; 2>&1
-if [[ $? -ne 0 ]]; then
-    # fedora > 19 has newer find.
-    find /etc/swiftbackup/post-backup.d/ -maxdepth 1 -type f -perm /111 -exec {} \;
-fi
+for SCRIPT in /etc/swiftbackup/post-backup.d/*; do
+    if [[ ! -d "${SCRIPT}" ]]; then
+        if [[ -x "${SCRIPT}" ]]; then
+            "${SCRIPT}" || lerror "Post backup script ${SCRIPT} failed."
+        fi
+    fi
+done
 
 echo
 lecho "SwiftBackup ${VERSION} ended on $(date)."
