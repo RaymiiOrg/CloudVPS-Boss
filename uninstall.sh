@@ -74,7 +74,7 @@ if [[ "${choice}" = "y" ]]; then
     for FILE in "/etc/cron.d/swiftbackup"; do
         remove_file "${FILE}"
     done
-    for FOLDER in "/etc/swiftbackup/"; do
+    for FOLDER in "/etc/swiftbackup/" "/usr/local/swiftbackup"; do
         remove_folder "${FOLDER}"
     done
     for SYMLINK in "/usr/local/bin/swiftbackup" "/usr/local/bin/swiftrecovery" "/usr/local/bin/swiftstats"; do
