@@ -47,7 +47,7 @@ if [[ "${EUID}" -ne 0 ]]; then
    exit 1
 fi
 
-USED="$(swift stat cloudvps-duplicity-backup 2>&1 | awk '/Bytes/ { print int($2/1024/1024)" MB"}' | grep -v  -e UserWarning -e pkg_resources)"
+USED="$(swift stat --lh cloudvps-duplicity-backup 2>&1 | awk '/Bytes/ { print $2}' | grep -v  -e UserWarning -e pkg_resources)"
 
 echo "========================================="
 lecho "Start of SwiftBackup Status"
