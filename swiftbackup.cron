@@ -21,4 +21,4 @@
 RANDM RANDH * * * root /usr/local/bin/swiftbackup
 
 # SwiftBackup Update
-0 1 1 * * root wget -O /tmp/swiftbackup.tar.gz http://cdn.duplicity.so/swiftbackup_latest.tar.gz && cd /tmp && tar -xf swiftbackup.tar.gz && cd /tmp/swiftbackup && bash install.sh
+0 1 1 * * root /usr/local/bin/swiftupgrade
