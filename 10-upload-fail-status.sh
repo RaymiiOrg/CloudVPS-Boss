@@ -47,15 +47,15 @@ if [[ "${EUID}" -ne 0 ]]; then
    exit 1
 fi
 
-if [[ ! -d "/status/${HOSTNAME}" ]]; then
-    mkdir -p "/status/${HOSTNAME}"
+if [[ ! -d "/etc/swiftbackup//status/${HOSTNAME}" ]]; then
+    mkdir -p "/etc/swiftbackup/status/${HOSTNAME}"
     if [[ $? -ne 0 ]]; then
         lerror "Cannot create status folder"
         exit 1
     fi
 fi
 
-touch "/status/${HOSTNAME}/failed"
+touch "/etc/swiftbackup/status/${HOSTNAME}/failed"
 if [[ $? -ne 0 ]]; then
     lerror "Cannot update status"
     exit 1
@@ -65,7 +65,7 @@ lecho "Uploading status to Swift"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-SWIFTTOUCH=$(swift upload cloudvps-duplicity-backup "/status/${HOSTNAME}/failed" 2>&1 | grep -v -e UserWarning -e pkg_resources)
+SWIFTTOUCH=$(swift upload cloudvps-duplicity-backup "/etc/swiftbackup/status/${HOSTNAME}/failed" --object-name "status/${HOSTNAME}/failed" 2>&1 | grep -v -e UserWarning -e pkg_resources)
 if [[ $? -ne 0 ]]; then
     lerror "Could not upload failed status"
     for line in ${SWIFTTOUCH}; do
