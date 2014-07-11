@@ -66,7 +66,7 @@ done
 
 
 echo
-lecho "SwiftBackup ${VERSION} started on $(date)."
+lecho "SwiftBackup ${VERSION} started on ${HOSTNAME} at $(date)."
 lecho "Full if last full is older than: ${FULL_IF_OLDER_THAN} and keep at max ${FULL_TO_KEEP} full backups."
 
 OLD_IFS="${IFS}"
