@@ -62,7 +62,7 @@ OLD_IFS="${IFS}"
 IFS=$'\n'
 DUPLICITY_STATS="$(duplicity collection-status --file-prefix="${HOSTNAME}." --no-encryption swift://cloudvps-duplicity-backup 2>&1 | grep -v -e UserWarning -e pkg_resources)"
 for line in ${DUPLICITY_STATS}; do
-        lecho ${line}
+        lecho "${line}"
 done
 IFS="${OLD_IFS}"
 lecho "End of SwiftBackup Status"

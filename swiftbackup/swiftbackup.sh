@@ -98,7 +98,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 for line in ${DUPLICITY_OUTPUT}; do
-        lecho ${line}
+        lecho "${line}"
 done
 IFS="${OLD_IFS}"
 
@@ -134,7 +134,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 for line in ${DUPLICITY_CLEANUP_OUTPUT}; do
-        lecho ${line}
+        lecho "${line}"
 done
 IFS="${OLD_IFS}"
 
