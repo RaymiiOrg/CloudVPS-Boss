@@ -1,7 +1,6 @@
 #!/bin/bash
-# SwiftBackup - Duplicity wrapper to back up to OpenStack Swift, Object 
-# Store. Copyright (C) 2014 CloudVPS. 
-# Author: Remy van Elst, https://raymii.org
+# CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
+# Copyright (C) 2014 CloudVPS. (CloudVPS Backup to Object Store Script)
 # 
 # This program is free software; you can redistribute it and/or modify it 
 # under the terms of the GNU General Public License as published by the 
@@ -18,30 +17,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-set -o pipefail
+VERSION="1.2"
 
-lecho() {
-    logger -t "swiftbackup" -- "$1"
-    echo "# $1"
-}
+TITLE="CloudVPS Boss PostgreSQL Backup ${VERSION}"
 
-lerror() {
-    logger -s -t "swiftbackup" -- "ERROR - $1"
-    echo "$1" 1>&2
-}
-
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-    if [[ $? -ne 0 ]]; then
-        lerror "I require $1 but it's not installed. Aborting."
-        exit 1
-    fi
-}
-
-if [[ "${EUID}" -ne 0 ]]; then
-   echo "This script must be run as root." 1>&2
-   exit 1
+if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
+    lerror "Cannot find /etc/cloudvps-boss/common.sh"
+    exit 1
 fi
+source /etc/cloudvps-boss/common.sh
 
 command -v psql >/dev/null 2>&1
 if [[ $? -ne 0 ]]; then

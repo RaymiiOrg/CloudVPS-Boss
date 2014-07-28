@@ -1,6 +1,6 @@
 #!/bin/bash
-# SwiftBackup - Duplicity wrapper to back up to OpenStack Swift, Object 
-# Store. Copyright (C) 2014 CloudVPS. 
+# CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
+# Copyright (C) 2014 CloudVPS. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -18,42 +18,20 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-set -o pipefail
+VERSION="1.2"
+TITLE="CloudVPS Boss Backup ${VERSION}"
 
-PATH=/usr/local/bin:$PATH
-
-VERSION="1.0"
-
-lecho() {
-    logger -t "swiftbackup" -- "$1"
-    echo "# $1"
-}
-
-lerror() {
-    logger -s -t "swiftbackup" -- "ERROR - $1"
-    echo "$1" 1>&2
-}
-
-if [[ "${EUID}" -ne 0 ]]; then
-   lerror "This script must be run as root"
-   exit 1
-fi
-
-if [[ ! -f "/etc/swiftbackup/auth.conf" ]]; then
-    lerror "Cannot find /etc/swiftbackup/auth.conf."
+if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
+    lerror "Cannot find /etc/cloudvps-boss/common.sh"
     exit 1
 fi
-if [[ ! -f "/etc/swiftbackup/backup.conf" ]]; then
-    lerror "Cannot find /etc/swiftbackup/backup.conf."
-    exit 1
-fi
+source /etc/cloudvps-boss/common.sh
 
-source /etc/swiftbackup/auth.conf
-source /etc/swiftbackup/backup.conf
+lecho "${TITLE} started on ${HOSTNAME} at $(date)."
 
 echo
-lecho "Running pre-backup scripts from /etc/swiftbackup/pre-backup.d/"
-for SCRIPT in /etc/swiftbackup/pre-backup.d/*; do
+lecho "Running pre-backup scripts from /etc/cloudvps-boss/pre-backup.d/"
+for SCRIPT in /etc/cloudvps-boss/pre-backup.d/*; do
     if [[ ! -d "${SCRIPT}" ]]; then
         if [[ -x "${SCRIPT}" ]]; then
             "${SCRIPT}"
@@ -64,10 +42,11 @@ for SCRIPT in /etc/swiftbackup/pre-backup.d/*; do
     fi
 done
 
-
 echo
-lecho "SwiftBackup ${VERSION} started on ${HOSTNAME} at $(date)."
-lecho "Full if last full is older than: ${FULL_IF_OLDER_THAN} and keep at max ${FULL_TO_KEEP} full backups."
+lecho "Create full backup if last full backup is older than: ${FULL_IF_OLDER_THAN} and keep at max ${FULL_TO_KEEP} full backups."
+lecho "Starting Duplicity"
+
+progress_bar
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
@@ -76,18 +55,18 @@ DUPLICITY_OUTPUT=$(duplicity \
     --asynchronous-upload \
     --file-prefix="${HOSTNAME}." \
     --exclude-device-files \
-    --exclude-globbing-filelist /etc/swiftbackup/exclude.conf \
+    --exclude-globbing-filelist /etc/cloudvps-boss/exclude.conf \
     --full-if-older-than "${FULL_IF_OLDER_THAN}" \
     / \
-    swift://cloudvps-duplicity-backup 2>&1 | grep -v  -e UserWarning -e pkg_resources)
+    swift://cloudvps-boss-backup 2>&1 | grep -v  -e UserWarning -e pkg_resources)
 
 if [[ $? -ne 0 ]]; then
     for line in ${DUPLICITY_OUTPUT}; do
             lerror ${line}
     done
-    lerror "SwiftBackup to Object Store FAILED!. Please check server $(uname -n)."
-    lerror "Running post-fail-backup scripts from /etc/swiftbackup/post-fail-backup.d/"
-    for SCRIPT in /etc/swiftbackup/post-fail-backup.d/*; do
+    lerror "CloudVPS Boss Backup to Object Store FAILED!. Please check server $(uname -n)."
+    lerror "Running post-fail-backup scripts from /etc/cloudvps-boss/post-fail-backup.d/"
+    for SCRIPT in /etc/cloudvps-boss/post-fail-backup.d/*; do
         if [[ ! -d "${SCRIPT}" ]]; then
             if [[ -x "${SCRIPT}" ]]; then
                 "${SCRIPT}" || lerror "Post fail backup script ${SCRIPT} failed."
@@ -103,7 +82,9 @@ done
 IFS="${OLD_IFS}"
 
 echo 
-lecho "SwiftCleanup ${VERSION} started on $(date). Removing all but ${FULL_TO_KEEP} full backups."
+lecho "CloudVPS Boss Cleanup ${VERSION} started on $(date). Removing all but ${FULL_TO_KEEP} full backups."
+
+progress_bar
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
@@ -113,20 +94,17 @@ DUPLICITY_CLEANUP_OUTPUT=$(duplicity \
     remove-all-but-n-full \
     "${FULL_TO_KEEP}" \
     --force \
-    swift://cloudvps-duplicity-backup 2>&1 | grep -v  -e UserWarning -e pkg_resources)
+    swift://cloudvps-boss-backup 2>&1 | grep -v  -e UserWarning -e pkg_resources)
 if [[ $? -ne 0 ]]; then
     for line in ${DUPLICITY_CLEANUP_OUTPUT}; do
             lerror ${line}
     done
-    lerror "SwiftCleanup FAILED!. Please check server ${HOSTNAME}." 
-    lerror "Running post-fail-backup scripts from /etc/swiftbackup/post-fail-backup.d/"
-    for SCRIPT in /etc/swiftbackup/post-fail-backup.d/*; do
+    lerror "CloudVPS Boss Cleanup FAILED!. Please check server ${HOSTNAME}." 
+    lerror "Running post-fail-backup scripts from /etc/cloudvps-boss/post-fail-backup.d/"
+    for SCRIPT in /etc/cloudvps-boss/post-fail-backup.d/*; do
     if [[ ! -d "${SCRIPT}" ]]; then
         if [[ -x "${SCRIPT}" ]]; then
             "${SCRIPT}" || lerror "Post fail backup script ${SCRIPT} failed."
-            if [[ $? -ne 0 ]]; then
-                lerror "Post fail backup script ${SCRIPT} failed."
-            fi
         fi
     fi
     done
@@ -139,8 +117,8 @@ done
 IFS="${OLD_IFS}"
 
 echo
-lecho "Running post-backup scripts from /etc/swiftbackup/post-backup.d/"
-for SCRIPT in /etc/swiftbackup/post-backup.d/*; do
+lecho "Running post-backup scripts from /etc/cloudvps-boss/post-backup.d/"
+for SCRIPT in /etc/cloudvps-boss/post-backup.d/*; do
     if [[ ! -d "${SCRIPT}" ]]; then
         if [[ -x "${SCRIPT}" ]]; then
             "${SCRIPT}" || lerror "Post backup script ${SCRIPT} failed."
@@ -149,4 +127,4 @@ for SCRIPT in /etc/swiftbackup/post-backup.d/*; do
 done
 
 echo
-lecho "SwiftBackup ${VERSION} ended on $(date)."
+lecho "CloudVPS Boss ${VERSION} ended on $(date)."
