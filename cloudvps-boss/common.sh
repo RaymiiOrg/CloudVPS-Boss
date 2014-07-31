@@ -160,6 +160,10 @@ if [[ ! -d "/etc/cloudvps-boss/status/${HOSTNAME}" ]]; then
     fi
 fi
 
+for COMMAND in "curl" "wget" "awk" "sed" "grep" "tar" "gzip" "which" "openssl" "nice" "ionice"; do
+    command_exists "${COMMAND}"
+done
+
 ACTUAL_HOSTNAME="$(get_hostname)"
 logger -t "cloudvps-boss" -- "Configured hostname is ${HOSTNAME}."
 logger -t "cloudvps-boss" -- "Actual hostname is ${ACTUAL_HOSTNAME}."
