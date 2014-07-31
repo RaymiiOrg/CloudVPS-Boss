@@ -35,7 +35,7 @@ if [[ "${choice}" = "y" ]]; then
     for FILE in "/etc/cron.d/cloudvps-boss"; do
         remove_file "${FILE}"
     done
-    for SYMLINK in "/usr/local/bin/cloudvps-boss" "/usr/local/bin/cloudvps-boss-restore" "/usr/local/bin/cloudvps-boss-stats"; do
+    for SYMLINK in "/usr/local/bin/cloudvps-boss" "/usr/local/bin/cloudvps-boss-restore" "/usr/local/bin/cloudvps-boss-stats" "/usr/local/bin/cloudvps-boss-update"; do
         remove_symlink "${SYMLINK}"
     done
     for PIP in "python-swiftclient" "python-keystoneclient"; do
