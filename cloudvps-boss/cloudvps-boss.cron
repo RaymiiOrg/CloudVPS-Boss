@@ -26,5 +26,5 @@ RUNNINGFROMCRON=1
 # CloudVPS Boss Backup
 RANDM RANDH * * * root /usr/local/bin/cloudvps-boss
 
-# CloudVPS Boss Upgrade
-0 1 1 * * root /usr/local/bin/cloudvps-boss-upgrade
+# CloudVPS Boss Update
+0 1 1 * * root /usr/local/bin/cloudvps-boss-update
