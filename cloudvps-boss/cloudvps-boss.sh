@@ -34,7 +34,7 @@ lecho "Running pre-backup scripts from /etc/cloudvps-boss/pre-backup.d/"
 for SCRIPT in /etc/cloudvps-boss/pre-backup.d/*; do
     if [[ ! -d "${SCRIPT}" ]]; then
         if [[ -x "${SCRIPT}" ]]; then
-            "${SCRIPT}"
+            ionice -c2 nice -n19 "${SCRIPT}"
             if [[ $? -ne 0 ]]; then
                 lerror "Pre backup script ${SCRIPT} failed."
             fi
@@ -50,9 +50,10 @@ progress_bar
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-DUPLICITY_OUTPUT=$(duplicity \
+DUPLICITY_OUTPUT=$(ionice -c2 nice -n19 duplicity \
     --no-encryption \
     --asynchronous-upload \
+    --volsize 1024 \
     --file-prefix="${HOSTNAME}." \
     --exclude-device-files \
     --exclude-globbing-filelist /etc/cloudvps-boss/exclude.conf \
@@ -88,7 +89,7 @@ progress_bar
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-DUPLICITY_CLEANUP_OUTPUT=$(duplicity \
+DUPLICITY_CLEANUP_OUTPUT=$(ionice -c2 nice -n19 duplicity \
     --no-encryption \
     --file-prefix="${HOSTNAME}." \
     remove-all-but-n-full \

@@ -82,7 +82,7 @@ for DB in ${DATABASES}; do
 done
 
 lecho "Dumping pg globals (roles and such, pg_dumpall -g)"
-su postgres -c "pg_dumpall -g | gzip > /var/backups/sql/pg_global_data.sql.gz"
+su postgres -c "ionice -c2 nice -n19 pg_dumpall -g | gzip > /var/backups/sql/pg_global_data.sql.gz"
 if [[ $? -ne 0 ]]; then
     lerror "Failed dumping postgres globals."
 else
