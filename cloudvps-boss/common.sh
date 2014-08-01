@@ -57,6 +57,10 @@ lecho() {
     echo "# $1"
 }
 
+log() {
+    logger -t "cloudvps-boss" -- "$1"
+}
+
 lerror() {
     logger -t "cloudvps-boss" -- "ERROR - $1"
     echo "$1" 1>&2
@@ -78,7 +82,7 @@ fake_progress() {
                 spin='-\|/.'
                 i=$(( (i+1) %5 ))
                 printf "\r  ${spin:$i:1}"
-                sleep .1
+                sleep 1
                 fake_progress "$1"
         fi
     fi
