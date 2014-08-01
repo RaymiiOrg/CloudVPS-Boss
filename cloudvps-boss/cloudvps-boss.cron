@@ -21,6 +21,7 @@
 # Replace root with your email address to receive backup reports.
 MAILTO="root"
 
+# Set env variable for scripts to not show spinner and such.
 RUNNINGFROMCRON=1
 
 # CloudVPS Boss Backup
