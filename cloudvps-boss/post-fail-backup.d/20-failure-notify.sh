@@ -31,9 +31,21 @@ for COMMAND in "mail"; do
     command_exists "${COMMAND}"
 done
 
+getlogging() {
+    if [[ -f "/var/log/messages" ]]; then
+        lecho "10 most recent lines with cloudvps-boss: ERROR in /var/log/messages:"
+        grep "cloudvps-boss: ERROR" /var/log/messages | tail -n 10
+    fi
+    if [[ -f "/var/log/syslog" ]]; then
+        lecho "10 most recent lines with cloudvps-boss: ERROR in /var/log/syslog:"
+        grep "cloudvps-boss: ERROR" /var/log/syslog | tail -n 10
+    fi
+    
+}
+
 errormail() {
 
-    mail -s "[CLOUDVPS BOSS] Critical error occurred during the backup!" "${recipient}" <<MAIL
+    mail -s "[CLOUDVPS BOSS] ${HOSTNAME}/$(curl -s http://ip.mtak.nl): Critical error occurred during the backup!" "${recipient}" <<MAIL
 
 Dear user,
 
@@ -42,14 +54,20 @@ Object Store has not succeeded on date: $(date) (server date/time).
 
 Here is some information:
 
+===== BEGIN CLOUDVPS BOSS ERROR LOG =====
+$(getlogging)
+===== END CLOUDVPS BOSS ERROR LOG =====
+
 ===== BEGIN CLOUDVPS BOSS STATS =====
 $(cloudvps-boss-stats)
 ===== END CLOUDVPS BOSS STATS =====
 
-This is server $(curl -s http://ip.mtak.nl). You are using CloudVPS Boss
-to backup files to the Object Store.
+This is server $(curl -s http://ip.mtak.nl). You are using CloudVPS Boss ${VERSION}
+to backup files to the CloudVPS Object Store.
 
-Your files have not been backupped at this time.
+Your files have not been backupped at this time. Please investigate this issue.
+
+IMPORTANT: YOUR FILES HAVE NOT BEEN BACKED UP. PLEASE INVESTIGAE THIS ISSUE.
 
 Kind regards,
 CloudVPS Boss
