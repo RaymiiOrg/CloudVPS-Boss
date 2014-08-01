@@ -34,10 +34,12 @@ lecho "Running pre-backup scripts from /etc/cloudvps-boss/pre-backup.d/"
 for SCRIPT in /etc/cloudvps-boss/pre-backup.d/*; do
     if [[ ! -d "${SCRIPT}" ]]; then
         if [[ -x "${SCRIPT}" ]]; then
+            lecho "${SCRIPT}"
             ionice -c2 nice -n19 "${SCRIPT}"
             if [[ $? -ne 0 ]]; then
                 lerror "Pre backup script ${SCRIPT} failed."
             fi
+            echo
         fi
     fi
 done
@@ -65,7 +67,7 @@ if [[ $? -ne 0 ]]; then
     for line in ${DUPLICITY_OUTPUT}; do
             lerror ${line}
     done
-    lerror "CloudVPS Boss Backup to Object Store FAILED!. Please check server $(uname -n)."
+    lerror "CloudVPS Boss Backup to Object Store FAILED!. Please check server ${HOSTNAME}."
     lerror "Running post-fail-backup scripts from /etc/cloudvps-boss/post-fail-backup.d/"
     for SCRIPT in /etc/cloudvps-boss/post-fail-backup.d/*; do
         if [[ ! -d "${SCRIPT}" ]]; then
