@@ -43,7 +43,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 if [[ "${PSQLD}" == 1 ]]; then
-    lecho "psql, pg_dump or pg_dumpall not found, not dumping postgresql."
+    log "psql, pg_dump or pg_dumpall not found, not dumping postgresql."
     exit
 fi
 

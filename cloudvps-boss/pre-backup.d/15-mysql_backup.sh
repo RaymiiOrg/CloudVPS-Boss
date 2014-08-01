@@ -39,7 +39,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 if [[ "${MYSQLD}" == 1 ]]; then
-    lecho "mysql or mysqldump not found, not dumping mysql."
+    log "mysql or mysqldump not found, not dumping mysql."
     exit
 fi
 
