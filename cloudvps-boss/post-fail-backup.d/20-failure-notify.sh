@@ -33,11 +33,11 @@ done
 
 getlogging() {
     if [[ -f "/var/log/messages" ]]; then
-        lecho "10 most recent lines with cloudvps-boss: ERROR in /var/log/messages:"
+        lecho "10 most recent lines with cloudvps-boss ERROR in /var/log/messages:"
         grep "cloudvps-boss: ERROR" /var/log/messages | tail -n 10
     fi
     if [[ -f "/var/log/syslog" ]]; then
-        lecho "10 most recent lines with cloudvps-boss: ERROR in /var/log/syslog:"
+        lecho "10 most recent lines with cloudvps-boss ERROR in /var/log/syslog:"
         grep "cloudvps-boss: ERROR" /var/log/syslog | tail -n 10
     fi
     
