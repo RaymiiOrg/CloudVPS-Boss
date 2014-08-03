@@ -26,6 +26,22 @@ if [[ ${DEBUG} == "1" ]]; then
     set -x
 fi
 
+trap ctrl_c INT
+
+lecho() {
+    logger -t "cloudvps-boss" -- "$1"
+    echo "# $1"
+}
+
+log() {
+    logger -t "cloudvps-boss" -- "$1"
+}
+
+lerror() {
+    logger -t "cloudvps-boss" -- "ERROR - $1"
+    echo "$1" 1>&2
+}
+
 PATH=/usr/local/bin:$PATH
 PID="$$"
 # Do not edit. Workaround for an openstack pbr bug. If not set, everything swift will fail miserably with errors like; Exception: Versioning for this project requires either an sdist tarball, or access to an upstream git repository. Are you sure that git is installed?
@@ -50,24 +66,6 @@ fi
 source /etc/cloudvps-boss/auth.conf
 source /etc/cloudvps-boss/backup.conf
 
-trap ctrl_c INT
-
-lecho() {
-    logger -t "cloudvps-boss" -- "$1"
-    echo "# $1"
-}
-
-log() {
-    logger -t "cloudvps-boss" -- "$1"
-}
-
-lerror() {
-    logger -t "cloudvps-boss" -- "ERROR - $1"
-    echo "$1" 1>&2
-}
-
-
-
 command_exists() {
     command -v "$1" >/dev/null 2>&1
     if [[ $? -ne 0 ]]; then
@@ -82,7 +80,7 @@ fake_progress() {
                 spin='-\|/.'
                 i=$(( (i+1) %5 ))
                 printf "\r  ${spin:$i:1}"
-                sleep 1
+                sleep 0.1
                 fake_progress "$1"
         fi
     fi
