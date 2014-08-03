@@ -20,33 +20,26 @@
 
 VERSION="1.3"
 
-TITLE="CloudVPS Boss Uninstall ${VERSION}"
-
+TITLE="CloudVPS Boss File Overview ${VERSION}"
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
     lerror "Cannot find /etc/cloudvps-boss/common.sh"
     exit 1
 fi
 source /etc/cloudvps-boss/common.sh
 
-read -p "Would you like to completely remove CloudVPS Boss? Your backups will NOT be removed. [y/N]? " choice
-
-if [[ "${choice}" = "y" ]]; then
-    lecho "Completely removing all of CloudVPS Boss"
-    for FILE in "/etc/cron.d/cloudvps-boss"; do
-        remove_file "${FILE}"
-    done
-    for SYMLINK in "/usr/local/bin/cloudvps-boss" "/usr/local/bin/cloudvps-boss-restore" "/usr/local/bin/cloudvps-boss-stats" "/usr/local/bin/cloudvps-boss-list-current-files" "/usr/local/bin/cloudvps-boss-update"; do
-        remove_symlink "${SYMLINK}"
-    done
-    for PIP in "python-swiftclient" "python-keystoneclient"; do
-        lecho "Uninstalling ${PIP} with pip."
-        echo "y\n" | pip -q uninstall "${PIP}" 2>&1 > /dev/null
-    done
-    for FOLDER in "/usr/local/cloudvps-boss"  "/etc/cloudvps-boss/"; do
-        remove_folder "${FOLDER}"
-    done
-    cd
-    exit
+if [[ -n "$1" ]]; then
+    TIME="$1"
+    TIMEOPT="--time $1"
+    TIME_MESS="Requested Time: $1"
 fi
 
-lecho "Choice was not 'y'. Not removing anything. Exiting."
+echo "========================================="
+lecho "Start of CloudVPS Boss File Overview"
+lecho "Hostname: ${HOSTNAME}"
+lecho "$TIME_MESS"
+echo "-----------------------------------------"
+lecho "duplicity list-current-files --file-prefix="${HOSTNAME}." --no-encryption ${TIMEOPT} swift://cloudvps-boss-backup"
+duplicity list-current-files --file-prefix="${HOSTNAME}." --no-encryption ${TIMEOPT} swift://cloudvps-boss-backup 2>&1 | grep -v -e UserWarning -e pkg_resources
+lecho "End of CloudVPS Boss File Overview"
+echo "========================================="
+
