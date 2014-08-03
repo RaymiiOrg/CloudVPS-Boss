@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.2"
+VERSION="1.3"
 TITLE="CloudVPS Boss Backup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -34,12 +34,11 @@ lecho "Running pre-backup scripts from /etc/cloudvps-boss/pre-backup.d/"
 for SCRIPT in /etc/cloudvps-boss/pre-backup.d/*; do
     if [[ ! -d "${SCRIPT}" ]]; then
         if [[ -x "${SCRIPT}" ]]; then
-            lecho "${SCRIPT}"
+            log "${SCRIPT}"
             ionice -c2 nice -n19 "${SCRIPT}"
             if [[ $? -ne 0 ]]; then
                 lerror "Pre backup script ${SCRIPT} failed."
             fi
-            echo
         fi
     fi
 done
