@@ -21,6 +21,7 @@
 VERSION="1.3"
 
 TITLE="CloudVPS Boss Upgrade ${VERSION}"
+DL_SRV="http://cdn.duplicity.so/"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
     lerror "Cannot find /etc/cloudvps-boss/common.sh"
@@ -32,9 +33,10 @@ lecho "${TITLE} started on ${HOSTNAME} at $(date)."
 
 pushd /tmp 
 
+echo "Removing old updates from /tmp"
 rm -rf /tmp/cloudvps-boss*
 
-wget -O /tmp/cloudvps-boss.tar.gz http://cdn.duplicity.so/cloudvps-boss_latest.tar.gz
+wget -O "/tmp/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
 if [[ $? -ne 0 ]]; then
     lecho "Download of cloudvps-boss failed. Check firewall and network connectivity."
     exit 1
@@ -56,7 +58,7 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 popd
-lecho "Removing temp files"
+lecho "Removing temp update files"
 rm -rf /tmp/cloudvps-boss
 rm -rf /tmp/cloudvps-boss.tar.gz
 
