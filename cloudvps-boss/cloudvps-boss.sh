@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.3"
+VERSION="1.3.5"
 TITLE="CloudVPS Boss Backup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -47,14 +47,13 @@ echo
 lecho "Create full backup if last full backup is older than: ${FULL_IF_OLDER_THAN} and keep at max ${FULL_TO_KEEP} full backups."
 lecho "Starting Duplicity"
 
-progress_bar
-
 OLD_IFS="${IFS}"
 IFS=$'\n'
 DUPLICITY_OUTPUT=$(ionice -c2 nice -n19 duplicity \
     --no-encryption \
     --asynchronous-upload \
-    --volsize 1024 \
+    --volsize 25 \
+    --tempdir "${TEMPDIR}" \
     --file-prefix="${HOSTNAME}." \
     --exclude-device-files \
     --exclude-globbing-filelist /etc/cloudvps-boss/exclude.conf \
@@ -85,8 +84,6 @@ IFS="${OLD_IFS}"
 
 echo 
 lecho "CloudVPS Boss Cleanup ${VERSION} started on $(date). Removing all but ${FULL_TO_KEEP} full backups."
-
-progress_bar
 
 OLD_IFS="${IFS}"
 IFS=$'\n'

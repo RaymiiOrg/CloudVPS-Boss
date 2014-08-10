@@ -66,6 +66,10 @@ fi
 source /etc/cloudvps-boss/auth.conf
 source /etc/cloudvps-boss/backup.conf
 
+TMP="${TEMPDIR}"
+TEMP="${TEMPDIR}"
+TMPDIR="${TEMPDIR}"
+
 command_exists() {
     command -v "$1" >/dev/null 2>&1
     if [[ $? -ne 0 ]]; then
