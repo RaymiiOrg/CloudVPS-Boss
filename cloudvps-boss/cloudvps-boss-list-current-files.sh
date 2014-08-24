@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.3"
+VERSION="1.4"
 
 TITLE="CloudVPS Boss File Overview ${VERSION}"
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -38,8 +38,8 @@ lecho "Start of CloudVPS Boss File Overview"
 lecho "Hostname: ${HOSTNAME}"
 lecho "$TIME_MESS"
 echo "-----------------------------------------"
-lecho "duplicity list-current-files --file-prefix="${HOSTNAME}." --no-encryption ${TIMEOPT} swift://cloudvps-boss-backup"
-duplicity list-current-files --file-prefix="${HOSTNAME}." --no-encryption ${TIMEOPT} swift://cloudvps-boss-backup 2>&1 | grep -v -e UserWarning -e pkg_resources
+lecho "duplicity list-current-files --file-prefix="${HOSTNAME}." ${ENCRYPTION_OPTIONS} ${TIMEOPT} swift://cloudvps-boss-backup"
+duplicity list-current-files --file-prefix="${HOSTNAME}." ${ENCRYPTION_OPTIONS} ${TIMEOPT} swift://cloudvps-boss-backup 2>&1 | grep -v -e UserWarning -e pkg_resources
 lecho "End of CloudVPS Boss File Overview"
 echo "========================================="
 

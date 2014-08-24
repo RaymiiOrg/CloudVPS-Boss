@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.3"
+VERSION="1.4"
 
 TITLE="CloudVPS Boss Stats ${VERSION}"
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -42,7 +42,7 @@ echo "-----------------------------------------"
 lecho "Duplicity collection status:"
 OLD_IFS="${IFS}"
 IFS=$'\n'
-DUPLICITY_STATS="$(duplicity collection-status --file-prefix="${HOSTNAME}." --no-encryption swift://cloudvps-boss-backup 2>&1 | grep -v -e UserWarning -e pkg_resources)"
+DUPLICITY_STATS="$(duplicity collection-status --file-prefix="${HOSTNAME}." swift://cloudvps-boss-backup 2>&1 | grep -v -e UserWarning -e pkg_resources)"
 for line in ${DUPLICITY_STATS}; do
         lecho "${line}"
 done
