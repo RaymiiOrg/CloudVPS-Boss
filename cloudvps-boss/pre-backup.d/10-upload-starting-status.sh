@@ -44,3 +44,22 @@ if [[ $? -ne 0 ]]; then
     done
 fi
 IFS="${OLD_IFS}"
+
+
+lecho "Logging version of CloudVPS Boss to Object Store: ${VERSION}"
+
+touch "/etc/cloudvps-boss/status/${HOSTNAME}/version-${VERSION}"
+if [[ $? -ne 0 ]]; then
+    lerror "Cannot update version"
+fi
+
+OLD_IFS="${IFS}"
+IFS=$'\n'
+SWIFTTOUCH=$(swift upload cloudvps-boss-backup "/etc/cloudvps-boss/status/${HOSTNAME}/version-${VERSION}" --object-name "status/${HOSTNAME}/version-${VERSION}" 2>&1 | grep -v -e UserWarning -e pkg_resources)
+if [[ $? -ne 0 ]]; then
+    lerror "Could not upload version"
+    for line in ${SWIFTTOUCH}; do
+        lerror ${line}
+    done
+fi
+IFS="${OLD_IFS}"
