@@ -33,8 +33,8 @@ lecho "${TITLE} started on ${HOSTNAME} at $(date)."
 
 pushd /tmp 
 
-echo "Removing old updates from /tmp"
-rm -rf /tmp/cloudvps-boss*
+lecho "Removing old updates from /tmp"
+rm -rf /tmp/cloudvps-boss.tar.gz
 
 wget -O "/tmp/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
 if [[ $? -ne 0 ]]; then
@@ -60,6 +60,5 @@ fi
 popd
 lecho "Removing temp update files"
 rm -rf /tmp/cloudvps-boss
-rm -rf /tmp/cloudvps-boss.tar.gz
 
 lecho "${TITLE} ended on ${HOSTNAME} at $(date)."
