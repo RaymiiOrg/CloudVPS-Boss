@@ -47,7 +47,7 @@ echo
 lecho "Create full backup if last full backup is older than: ${FULL_IF_OLDER_THAN} and keep at max ${FULL_TO_KEEP} full backups."
 lecho "Starting Duplicity"
 
-lecho "ionice -c2 nice -n19 duplicity --asynchronous-upload --volsize 25 --tempdir=\"${TEMPDIR}\" --file-prefix=\"${HOSTNAME}.\" --exclude-device-files --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf --full-if-older-than=\"${FULL_IF_OLDER_THAN}\" ${ENCRYPTION_OPTIONS} / swift://cloudvps-boss-backup"
+lecho "ionice -c2 nice -n19 duplicity --asynchronous-upload --volsize 25 --tempdir=\"${TEMPDIR}\" --file-prefix=\"${HOSTNAME}.\" --exclude-device-files --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf --full-if-older-than=\"${FULL_IF_OLDER_THAN}\" ${ENCRYPTION_OPTIONS} / ${BACKUP_BACKEND}"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
@@ -61,7 +61,7 @@ DUPLICITY_OUTPUT=$(ionice -c2 nice -n19 duplicity \
     --full-if-older-than="${FULL_IF_OLDER_THAN}" \
     ${ENCRYPTION_OPTIONS} \
     / \
-    swift://cloudvps-boss-backup 2>&1 | grep -v  -e UserWarning -e pkg_resources)
+    ${BACKUP_BACKEND} 2>&1 | grep -v  -e UserWarning -e pkg_resources)
 
 if [[ $? -ne 0 ]]; then
     for line in ${DUPLICITY_OUTPUT}; do
@@ -86,7 +86,7 @@ IFS="${OLD_IFS}"
 
 echo 
 lecho "CloudVPS Boss Cleanup ${VERSION} started on $(date). Removing all but ${FULL_TO_KEEP} full backups."
-lecho "ionice -c2 nice -n19 duplicity --file-prefix=\"${HOSTNAME}.\" remove-all-but-n-full \"${FULL_TO_KEEP}\" --force ${ENCRYPTION_OPTIONS} swift://cloudvps-boss-backup"
+lecho "ionice -c2 nice -n19 duplicity --file-prefix=\"${HOSTNAME}.\" remove-all-but-n-full \"${FULL_TO_KEEP}\" --force ${ENCRYPTION_OPTIONS} ${BACKUP_BACKEND}"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
@@ -96,7 +96,7 @@ DUPLICITY_CLEANUP_OUTPUT=$(ionice -c2 nice -n19 duplicity \
     "${FULL_TO_KEEP}" \
     ${ENCRYPTION_OPTIONS} \
     --force \
-    swift://cloudvps-boss-backup 2>&1 | grep -v  -e UserWarning -e pkg_resources)
+    ${BACKUP_BACKEND} 2>&1 | grep -v  -e UserWarning -e pkg_resources)
 if [[ $? -ne 0 ]]; then
     for line in ${DUPLICITY_CLEANUP_OUTPUT}; do
             lerror ${line}
