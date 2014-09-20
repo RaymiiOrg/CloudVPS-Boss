@@ -38,9 +38,13 @@ if [[ "${choice}" = "y" ]]; then
     for SYMLINK in "/usr/local/bin/cloudvps-boss" "/usr/local/bin/cloudvps-boss-restore" "/usr/local/bin/cloudvps-boss-stats" "/usr/local/bin/cloudvps-boss-list-current-files" "/usr/local/bin/cloudvps-boss-update"; do
         remove_symlink "${SYMLINK}"
     done
-    for PIP in "python-swiftclient" "python-keystoneclient"; do
-        lecho "Uninstalling ${PIP} with pip."
-        echo "y\n" | pip -q uninstall "${PIP}" 2>&1 > /dev/null
+    for PIP_INSTALLED in "python-swiftclient" "python-keystoneclient"; do
+        for PIP_VERSION in "pip" "pip2" "pip27" "pip2.7"; do
+            if [[ "$(command_exists_non_verbose ${PIP_VERSION})" ]]; then
+                lecho "Uninstalling ${PIP_INSTALLED} with ${PIP_VERSION}."
+                echo "y\n" | ${PIP_VERSION} -q uninstall "${PIP_INSTALLED}" 2>&1 > /dev/null
+            fi
+        done
     done
     for FOLDER in "/usr/local/cloudvps-boss"  "/etc/cloudvps-boss/"; do
         remove_folder "${FOLDER}"
