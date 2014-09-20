@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5
+
+- Add custom backend support.
+- Add custom additional options support.
+- Add use of duplicity --name parameter.
+- Fix uninstaller when pip was not named pip.
+- Fix some quoting issues.
+
 ## 1.4
 
 - Add encryption setup support.
