@@ -38,8 +38,8 @@ lecho "Start of CloudVPS Boss File Overview"
 lecho "Hostname: ${HOSTNAME}"
 lecho "$TIME_MESS"
 echo "-----------------------------------------"
-lecho "duplicity list-current-files --file-prefix="${HOSTNAME}." ${ENCRYPTION_OPTIONS} ${TIMEOPT} ${BACKUP_BACKEND}"
-duplicity list-current-files --file-prefix="${HOSTNAME}." ${ENCRYPTION_OPTIONS} ${TIMEOPT} ${BACKUP_BACKEND} 2>&1 | grep -v -e UserWarning -e pkg_resources
+lecho "duplicity list-current-files --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" ${ENCRYPTION_OPTIONS} ${TIMEOPT} ${BACKUP_BACKEND}"
+duplicity list-current-files --file-prefix="${HOSTNAME}." --name="${HOSTNAME}." ${ENCRYPTION_OPTIONS} ${TIMEOPT} ${BACKUP_BACKEND} 2>&1 | grep -v -e UserWarning -e pkg_resources
 lecho "End of CloudVPS Boss File Overview"
 echo "========================================="
 
