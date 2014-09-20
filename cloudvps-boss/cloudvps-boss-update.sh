@@ -33,9 +33,17 @@ lecho "${TITLE} started on ${HOSTNAME} at $(date)."
 
 pushd /tmp 
 
-lecho "Removing old updates from /tmp"
-rm -rf /tmp/cloudvps-boss.tar.gz
+if [[ -f "/tmp/cloudvps-boss.tar.gz" ]]; then
+    lecho "Removing old update file from /tmp/cloudvps-boss.tar.gz"
+    rm -rf /tmp/cloudvps-boss.tar.gz
+fi
 
+if [[ -d "/tmp/cloudvps-boss" ]]; then
+    lecho "Removing old update folder from /tmp/cloudvps-boss"
+    rm -rf /tmp/cloudvps-boss
+fi
+
+lecho "Downloading CloudVPS Boss from ${DL_SRV}cloudvps-boss_latest.tar.gz"
 wget -O "/tmp/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
 if [[ $? -ne 0 ]]; then
     lecho "Download of cloudvps-boss failed. Check firewall and network connectivity."
@@ -44,8 +52,7 @@ fi
 
 tar -xf cloudvps-boss.tar.gz
 if [[ $? -ne 0 ]]; then
-    lecho "Extraction of cloudvps-boss failed."
-    rm -rf /tmp/cloudvps-boss.tar.gz
+    lecho "Extraction of cloudvps-boss in /tmp failed."
     exit 1
 fi
 popd
@@ -58,7 +65,5 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 popd
-lecho "Removing temp update files"
-rm -rf /tmp/cloudvps-boss
 
 lecho "${TITLE} ended on ${HOSTNAME} at $(date)."
