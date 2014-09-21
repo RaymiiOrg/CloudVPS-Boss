@@ -5,6 +5,7 @@
 - Add custom backend support.
 - Add custom additional options support.
 - Add use of duplicity --name parameter.
+- Add documentation on manual cleanup.
 - Change auto update to run once a week.
 - Fix uninstaller when pip was not named pip.
 - Fix some quoting issues.
