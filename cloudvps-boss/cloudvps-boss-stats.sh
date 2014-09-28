@@ -42,7 +42,12 @@ echo "-----------------------------------------"
 lecho "Duplicity collection status:"
 OLD_IFS="${IFS}"
 IFS=$'\n'
-DUPLICITY_STATS="$(duplicity collection-status --file-prefix="${HOSTNAME}." --name="${HOSTNAME}." ${BACKUP_BACKEND} 2>&1 | grep -v -e UserWarning -e pkg_resources)"
+DUPLICITY_STATS="$(
+    duplicity collection-status \
+    --file-prefix="${HOSTNAME}." \
+    --name="${HOSTNAME}." \
+    ${CUSTOM_DUPLICITY_OPTIONS} \
+    ${BACKUP_BACKEND} 2>&1 | grep -v -e UserWarning -e pkg_resources)"
 for line in ${DUPLICITY_STATS}; do
         lecho "${line}"
 done
