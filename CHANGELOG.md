@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6
+
+- Add view progress command for long running backups
+- Add section for large backups to README
+- Add https download link to README
+- Change default exclude list
+
 ## 1.5
 
 - Add custom backend support.
