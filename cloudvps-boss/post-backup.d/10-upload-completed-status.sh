@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.5"
+VERSION="1.6"
 
 TITLE="CloudVPS Boss Completed Status Upload ${VERSION}"
 
