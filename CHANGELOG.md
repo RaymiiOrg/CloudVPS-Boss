@@ -2,10 +2,16 @@
 
 ## 1.6
 
-- Add view progress command for long running backups
-- Add section for large backups to README
-- Add https download link to README
-- Change default exclude list
+- Add view progress command for long running backups.
+- Add section for large backups to README.
+- Add https download link to README.
+- Add bandwidth limit instructions to README.
+- Add wget/curl wrapper for remote file downloading.
+- Change default exclude list.
+- Change update download link to https.
+- Change internal json functions to be more clear.
+- Fix installer bug when multiple duplicity source folders exist.
+- Remove some non used code.
 
 ## 1.5
 
