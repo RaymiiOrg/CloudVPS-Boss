@@ -21,7 +21,7 @@
 VERSION="1.6"
 
 TITLE="CloudVPS Boss Upgrade ${VERSION}"
-DL_SRV="http://cdn.duplicity.so/"
+DL_SRV="https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn/"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
     lerror "Cannot find /etc/cloudvps-boss/common.sh"
@@ -44,7 +44,7 @@ if [[ -d "/tmp/cloudvps-boss" ]]; then
 fi
 
 lecho "Downloading CloudVPS Boss from ${DL_SRV}cloudvps-boss_latest.tar.gz"
-wget -O "/tmp/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
+get_file "/tmp/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
 if [[ $? -ne 0 ]]; then
     lecho "Download of cloudvps-boss failed. Check firewall and network connectivity."
     exit 1
