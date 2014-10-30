@@ -36,7 +36,7 @@ fi
 if [[ -f "/var/log/duplicity.log" ]]; then
     TOTAL_DISK_USED="$(df -BM --total 2>/dev/null| awk '/total/ {print $3}' | sed -e 's/M//g')"
 
-    DUPLICITY_VOL_DONE="$(grep -a -oE 'Volume [0-9]{1,6}' /tmp/duplicity.strace | grep -a -oE '[0-9]{1,6}' | tail -n 1)"
+    DUPLICITY_VOL_DONE="$(grep -a -oE 'Volume [0-9]{1,6}' /var/log/duplicity.log | grep -a -oE '[0-9]{1,6}' | tail -n 1)"
     if [[ -z "${DUPLICITY_VOL_DONE}" ]]; then
         lerror "Error reading current volume. Please let duplicity finish at least 1 volume."
         exit 1
