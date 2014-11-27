@@ -19,7 +19,7 @@
 # 
 
 VERSION="1.6"
-TITLE="CloudVPS Boss Start Status Upload ${VERSION}"
+TITLE="CloudVPS Boss Backup Verify ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
     lerror "Cannot find /etc/cloudvps-boss/common.sh"
@@ -27,38 +27,35 @@ if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
 fi
 source /etc/cloudvps-boss/common.sh
 
-touch "/etc/cloudvps-boss/status/${HOSTNAME}/started"
-if [[ $? -ne 0 ]]; then
-    lerror "Cannot update status"
-    exit 1
-fi
+lecho "${TITLE} started on ${HOSTNAME} at $(date)."
+
+lecho "duplicity verify --volsize ${VOLUME_SIZE} --tempdir=\"${TEMPDIR}\" --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" --exclude-device-files --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf ${ENCRYPTION_OPTIONS} ${BACKUP_BACKEND} /"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-SWIFTTOUCH=$(swift upload cloudvps-boss-backup "/etc/cloudvps-boss/status/${HOSTNAME}/started" --object-name "status/${HOSTNAME}/started" 2>&1 | grep -v -e UserWarning -e pkg_resources)
+DUPLICITY_OUTPUT=$(duplicity \
+    verify \
+    --volsize=${VOLUME_SIZE} \
+    --tempdir="${TEMPDIR}" \
+    --file-prefix="${HOSTNAME}." \
+    --name="${HOSTNAME}." \
+    --exclude-device-files \
+    --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf \
+    ${ENCRYPTION_OPTIONS} \
+    ${BACKUP_BACKEND} \
+    / 2>&1 | grep -v  -e UserWarning -e pkg_resources)
+
 if [[ $? -ne 0 ]]; then
-    lerror "Could not upload status"
-    for line in ${SWIFTTOUCH}; do
-        lerror ${line}
+    for line in ${DUPLICITY_OUTPUT}; do
+            lerror ${line}
     done
+    lerror "CloudVPS Boss Verify FAILED!. Please check server ${HOSTNAME}."
 fi
+
+for line in ${DUPLICITY_OUTPUT}; do
+        lecho "${line}"
+done
 IFS="${OLD_IFS}"
 
-
-lecho "Logging version of CloudVPS Boss to Object Store: ${VERSION}"
-
-touch "/etc/cloudvps-boss/status/${HOSTNAME}/version-${VERSION}"
-if [[ $? -ne 0 ]]; then
-    lerror "Cannot update version"
-fi
-
-OLD_IFS="${IFS}"
-IFS=$'\n'
-SWIFTTOUCH=$(swift upload cloudvps-boss-backup "/etc/cloudvps-boss/status/${HOSTNAME}/version-${VERSION}" --object-name "status/${HOSTNAME}/version-${VERSION}" 2>&1 | grep -v -e UserWarning -e pkg_resources)
-if [[ $? -ne 0 ]]; then
-    lerror "Could not upload version"
-    for line in ${SWIFTTOUCH}; do
-        lerror ${line}
-    done
-fi
-IFS="${OLD_IFS}"
+echo
+lecho "CloudVPS Boss Verify ${VERSION} ended on $(date)."

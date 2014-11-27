@@ -19,8 +19,8 @@
 # 
 
 VERSION="1.6"
-
 TITLE="CloudVPS Boss Stats ${VERSION}"
+
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
     lerror "Cannot find /etc/cloudvps-boss/common.sh"
     exit 1

@@ -19,8 +19,8 @@
 # 
 
 VERSION="1.6"
-
 TITLE="CloudVPS Boss Upgrade ${VERSION}"
+
 DL_SRV="https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn/"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then

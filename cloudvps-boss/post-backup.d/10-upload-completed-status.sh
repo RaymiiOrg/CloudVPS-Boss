@@ -19,7 +19,6 @@
 # 
 
 VERSION="1.6"
-
 TITLE="CloudVPS Boss Completed Status Upload ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
