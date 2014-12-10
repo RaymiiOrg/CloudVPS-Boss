@@ -35,8 +35,11 @@ fi
 
 if [[ -f "/var/log/duplicity.log" ]]; then
     TOTAL_DISK_USED="$(df -BM --total 2>/dev/null| awk '/total/ {print $3}' | sed -e 's/M//g')"
-
-    DUPLICITY_VOL_DONE="$(grep -a -oE 'Volume [0-9]{1,6}' /var/log/duplicity.log | grep -a -oE '[0-9]{1,6}' | tail -n 1)"
+    if [[ "${TOTAL_DISK_USED}" -eq "0" ]]; then
+        lerror "Error reading current disk usage. Does your df support the --total option?."
+        exit 1
+    fi
+    DUPLICITY_VOL_DONE="$(grep -a -i -oE 'Volume [0-9]{1,6}' /var/log/duplicity.log | grep -a -oE '[0-9]{1,6}' | tail -n 1)"
     if [[ -z "${DUPLICITY_VOL_DONE}" ]]; then
         lerror "Error reading current volume. Please let duplicity finish at least 1 volume."
         exit 1
@@ -109,7 +112,7 @@ if [[ -f "/var/log/duplicity.log" ]]; then
     echo ']'
     
     # clean log if it's larger than 128MiB
-    if [[ "$(wc -c /var/log/duplicity.log)" > "134217728" ]]; then
+    if [[ "$(wc -c /var/log/duplicity.log)" -gt "134217728" ]]; then
         log "strace log larger than 128MiB, cleaning up."
         echo "Volume ${DUPLICITY_VOL_DONE}" > /var/log/duplicity.log
     fi

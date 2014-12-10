@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.7
+
+- Add check during install/update for already compiled dependencies.
+- Change
+- Change installer download paths to more clean structure.
+- Fix progress reporting error when df does not support --total.
+- Fix AUTH_TOKEN not found during install sometimes.
+- Remove overwriting of cronjob during upgrade.
+
 ## 1.6
 
 - Add view progress command for long running backups.
@@ -7,10 +16,14 @@
 - Add https download link to README.
 - Add bandwidth limit instructions to README.
 - Add wget/curl wrapper for remote file downloading.
+- Add more clear encryption instructions.
+- Add workaround when AUTH_TOKEN during credential setup fails.
 - Change default exclude list.
 - Change update download link to https.
 - Change internal json functions to be more clear.
+- Change default retention to 3 months instead of 6.
 - Fix installer bug when multiple duplicity source folders exist.
+- Fix installer bug when install fails on immutable scripts.
 - Remove some non used code.
 
 ## 1.5
