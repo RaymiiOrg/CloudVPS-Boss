@@ -112,7 +112,7 @@ if [[ -f "/var/log/duplicity.log" ]]; then
     echo ']'
     
     # clean log if it's larger than 128MiB
-    if [[ "$(wc -c /var/log/duplicity.log)" -gt "134217728" ]]; then
+    if [[ "$(wc -c /var/log/duplicity.log | awk '{print $1}')" -gt "134217728" ]]; then
         log "strace log larger than 128MiB, cleaning up."
         echo "Volume ${DUPLICITY_VOL_DONE}" > /var/log/duplicity.log
     fi
