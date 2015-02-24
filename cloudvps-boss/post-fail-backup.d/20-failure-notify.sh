@@ -1,6 +1,6 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2014 CloudVPS. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2015 CloudVPS. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.6"
+VERSION="1.7"
 TITLE="CloudVPS Boss Failure Notify ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -26,6 +26,12 @@ if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
     exit 1
 fi
 source /etc/cloudvps-boss/common.sh
+
+if [[ -f "/etc/cloudvps-boss/status/24h" ]]; then
+    lecho "24 hour backup file found. Not sending email, removing file."
+    rm "/etc/cloudvps-boss/status/24h"
+    exit 0
+fi
 
 for COMMAND in "mail"; do
     command_exists "${COMMAND}"

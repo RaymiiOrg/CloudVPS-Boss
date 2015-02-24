@@ -5,13 +5,16 @@
 - Add check during install/update for already compiled dependencies.
 - Add install of base-devel to Arch installer.
 - Add more information to failure email script
-- Change
+- Add lock file checking and handling.
+- Add default MySQL data dir to exclude list.
 - Change installer download paths to more clean structure.
-- Fix progress reporting error when df does not support --total.
-- Fix AUTH_TOKEN not found during install sometimes.
+- Upgrade Duplicity version to 7.
 - Remove overwriting of cronjob during upgrade.
+- Fix progress reporting error when df does not support --total.
+- Fix rare AUTH_TOKEN not found during install.
 - Fix curl dependency check in installer
 - Fix curl not found error in credential script
+
 
 
 ## 1.6
