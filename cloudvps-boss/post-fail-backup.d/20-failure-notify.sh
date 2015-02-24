@@ -32,6 +32,10 @@ for COMMAND in "mail"; do
 done
 
 getlogging() {
+    if [[ -f /var/log/duplicity.log ]]; then
+        grep -v -e 'INFO' -e 'Import' -e 'Main action' -e '. A ' -e '. D ' -e 'Another' -e 'If you are sure' -e 'the following lockfile' -e '/root/.cache' -e 'Using temporary' -e '^$' -e 'NOTICE 1' -e 'globbing filelist' -e 'backup name' -e 'ERROR 23' -e 'Skipping socket' -e 'Deleting /tmp' -e 'AsyncScheduler' -e 'Uploading ' -e '. M ' -e 'Added incremental' -e 'Ignoring incremental'  /var/log/duplicity.log 
+
+    fi
     if [[ -f "/var/log/messages" ]]; then
         lecho "10 most recent lines with cloudvps-boss ERROR in /var/log/messages:"
         grep "cloudvps-boss: ERROR" /var/log/messages | tail -n 10

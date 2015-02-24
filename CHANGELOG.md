@@ -3,11 +3,16 @@
 ## 1.7
 
 - Add check during install/update for already compiled dependencies.
+- Add install of base-devel to Arch installer.
+- Add more information to failure email script
 - Change
 - Change installer download paths to more clean structure.
 - Fix progress reporting error when df does not support --total.
 - Fix AUTH_TOKEN not found during install sometimes.
 - Remove overwriting of cronjob during upgrade.
+- Fix curl dependency check in installer
+- Fix curl not found error in credential script
+
 
 ## 1.6
 
