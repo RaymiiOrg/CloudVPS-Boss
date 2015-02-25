@@ -43,7 +43,7 @@ DUPLICITY_OUTPUT=$(duplicity \
     --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf \
     ${ENCRYPTION_OPTIONS} \
     ${BACKUP_BACKEND} \
-    / 2>&1 | grep -v  -e UserWarning -e pkg_resources)
+    / 2>&1 | grep -v  -e Warning -e pkg_resources -e oslo)
 
 if [[ $? -ne 0 ]]; then
     for line in ${DUPLICITY_OUTPUT}; do

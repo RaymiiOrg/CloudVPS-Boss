@@ -45,7 +45,7 @@ duplicity list-current-files \
     ${ENCRYPTION_OPTIONS} \
     ${CUSTOM_DUPLICITY_OPTIONS} \
     ${TIMEOPT} \
-    ${BACKUP_BACKEND} 2>&1 | grep -v -e UserWarning -e pkg_resources
+    ${BACKUP_BACKEND} 2>&1 | grep -v -e Warning -e pkg_resources -e oslo
 lecho "End of CloudVPS Boss File Overview"
 echo "========================================="
 

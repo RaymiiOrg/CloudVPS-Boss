@@ -28,7 +28,7 @@ fi
 source /etc/cloudvps-boss/common.sh
 
 
-USED="$(swift stat --lh cloudvps-boss-backup 2>&1 | awk '/Bytes/ { print $2}' | grep -v  -e UserWarning -e pkg_resources)"
+USED="$(swift stat --lh cloudvps-boss-backup 2>&1 | awk '/Bytes/ { print $2}' | grep -v -e Warning -e pkg_resources -e oslo)"
 
 echo "========================================="
 lecho "Start of CloudVPS Boss Status"
@@ -47,7 +47,7 @@ DUPLICITY_STATS="$(
     --file-prefix="${HOSTNAME}." \
     --name="${HOSTNAME}." \
     ${CUSTOM_DUPLICITY_OPTIONS} \
-    ${BACKUP_BACKEND} 2>&1 | grep -v -e UserWarning -e pkg_resources)"
+    ${BACKUP_BACKEND} 2>&1 | grep -v -e Warning -e pkg_resources -e oslo)"
 for line in ${DUPLICITY_STATS}; do
         lecho "${line}"
 done

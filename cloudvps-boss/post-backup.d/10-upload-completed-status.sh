@@ -35,7 +35,7 @@ fi
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-SWIFTTOUCH=$(swift upload cloudvps-boss-backup "/etc/cloudvps-boss/status/${HOSTNAME}/completed" --object-name "status/${HOSTNAME}/completed" 2>&1 | grep -v -e UserWarning -e pkg_resources)
+SWIFTTOUCH=$(swift upload cloudvps-boss-backup "/etc/cloudvps-boss/status/${HOSTNAME}/completed" --object-name "status/${HOSTNAME}/completed" 2>&1 | grep -v -e Warning -e pkg_resources -e oslo)
 if [[ $? -ne 0 ]]; then
     lerror "Could not upload completed status"
     for line in ${SWIFTTOUCH}; do
