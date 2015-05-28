@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8
+
+- Add send email if MySQL backup fails
+- Add send email if CloudVPS Boss upgrade fails
+- Ugrade Duplicity version to.0.7.03.
+
 ## 1.7
 
 - Add check during install/update for already compiled dependencies.

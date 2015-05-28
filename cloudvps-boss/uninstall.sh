@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.5"
+VERSION="1.8"
 
 TITLE="CloudVPS Boss Uninstall ${VERSION}"
 
@@ -31,7 +31,7 @@ source /etc/cloudvps-boss/common.sh
 read -p "Would you like to completely remove CloudVPS Boss? Your backups will NOT be removed. [y/N]? " choice
 
 if [[ "${choice}" = "y" ]]; then
-    lecho "Completely removing all of CloudVPS Boss"
+    lecho "Removing CloudVPS Boss"
     for FILE in "/etc/cron.d/cloudvps-boss"; do
         remove_file "${FILE}"
     done
