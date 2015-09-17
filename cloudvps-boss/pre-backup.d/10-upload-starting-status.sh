@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.8"
+VERSION="1.9.1"
 TITLE="CloudVPS Boss Start Status Upload ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -35,7 +35,7 @@ fi
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-SWIFTTOUCH=$(swift upload cloudvps-boss-backup "/etc/cloudvps-boss/status/${HOSTNAME}/started" --object-name "status/${HOSTNAME}/started" 2>&1 | grep -v -e Warning -e pkg_resources -e oslo)
+SWIFTTOUCH=$(swift upload ${CONTAINER_NAME} "/etc/cloudvps-boss/status/${HOSTNAME}/started" --object-name "status/${HOSTNAME}/started" 2>&1 | grep -v -e Warning -e pkg_resources -e oslo)
 if [[ $? -ne 0 ]]; then
     lerror "Could not upload status"
     for line in ${SWIFTTOUCH}; do
@@ -54,7 +54,7 @@ fi
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-SWIFTTOUCH=$(swift upload cloudvps-boss-backup "/etc/cloudvps-boss/status/${HOSTNAME}/version-${VERSION}" --object-name "status/${HOSTNAME}/version-${VERSION}" 2>&1 | grep -v -e UserWarning -e pkg_resources -e oslo)
+SWIFTTOUCH=$(swift upload ${CONTAINER_NAME} "/etc/cloudvps-boss/status/${HOSTNAME}/version-${VERSION}" --object-name "status/${HOSTNAME}/version-${VERSION}" 2>&1 | grep -v -e UserWarning -e pkg_resources -e oslo)
 if [[ $? -ne 0 ]]; then
     lerror "Could not upload version"
     for line in ${SWIFTTOUCH}; do

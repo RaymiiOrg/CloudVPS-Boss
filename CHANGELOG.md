@@ -1,10 +1,27 @@
 # Changelog
 
+## 1.9.1
+
+- Remove requests workaround for ubuntu 14.04.
+- Increase retry time.
+- Update Duplicity to 0.7.05
+
+## 1.9.0
+
+- Add package installation on install (curl was unavailable sometimes).
+- Add suggestion in error messages on failed install to let user retry the command.
+- Retry MySQL credential building when authentication fails, before emailing user.
+- Improve lockfile / running backup check.
+- Fix large (+250 GB if 25 MB volumes or 2.5 TB if 250 MB volumes) backup sets. Only full backups were made because of https://launchpad.net/+branch/~raymii/duplicity/fix-swiftbackend-max-10000-files-in-list.
+- Update some duplicity command options because of deprecation.
+- Upgrade Duplicity version to 0.7.04.
+
 ## 1.8
 
-- Add send email if MySQL backup fails
-- Add send email if CloudVPS Boss upgrade fails
-- Ugrade Duplicity version to.0.7.03.
+- Add send email if MySQL backup fails.
+- Change default volsize to 250 MB.
+- Upgrade Duplicity version to.0.7.03.
+- Upgrade Python to 2.7.10 (on new installs)
 
 ## 1.7
 

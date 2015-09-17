@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.8"
+VERSION="1.9.1"
 TITLE="CloudVPS Boss File Overview ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -38,12 +38,14 @@ lecho "Start of CloudVPS Boss File Overview"
 lecho "Hostname: ${HOSTNAME}"
 lecho "$TIME_MESS"
 echo "-----------------------------------------"
-lecho "duplicity list-current-files --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" ${ENCRYPTION_OPTIONS} ${CUSTOM_DUPLICITY_OPTIONS} ${TIMEOPT} ${BACKUP_BACKEND}"
+lecho "duplicity list-current-files --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" ${ENCRYPTION_OPTIONS} ${CUSTOM_DUPLICITY_OPTIONS} --allow-source-mismatch --num-retries 100 ${TIMEOPT} ${BACKUP_BACKEND}"
 duplicity list-current-files \
     --file-prefix="${HOSTNAME}." \
     --name="${HOSTNAME}." \
     ${ENCRYPTION_OPTIONS} \
     ${CUSTOM_DUPLICITY_OPTIONS} \
+    --allow-source-mismatch \
+    --num-retries 100 \
     ${TIMEOPT} \
     ${BACKUP_BACKEND} 2>&1 | grep -v -e Warning -e pkg_resources -e oslo
 lecho "End of CloudVPS Boss File Overview"

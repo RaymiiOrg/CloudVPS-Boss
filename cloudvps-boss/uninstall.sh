@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.8"
+VERSION="1.9.1"
 
 TITLE="CloudVPS Boss Uninstall ${VERSION}"
 

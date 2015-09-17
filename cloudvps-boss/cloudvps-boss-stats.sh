@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.8"
+VERSION="1.9.1"
 TITLE="CloudVPS Boss Stats ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -28,12 +28,12 @@ fi
 source /etc/cloudvps-boss/common.sh
 
 
-USED="$(swift stat --lh cloudvps-boss-backup 2>&1 | awk '/Bytes/ { print $2}' | grep -v -e Warning -e pkg_resources -e oslo)"
+USED="$(swift stat --lh ${CONTAINER_NAME} 2>&1 | awk '/Bytes/ { print $2}' | grep -v -e Warning -e pkg_resources -e oslo)"
 
 echo "========================================="
-lecho "Start of CloudVPS Boss Status"
+lecho "Start of CloudVPS Boss Status ${VERSION}"
 lecho "Hostname: ${HOSTNAME}"
-lecho "IP: $(curl -s http://ip.mtak.nl)"
+lecho "IP: $(curl -s http://ip.raymii.org)"
 lecho "Username: ${SWIFT_USERNAME}"
 lecho "Storage used: ${USED}"
 lecho "Full backups to keep: ${FULL_TO_KEEP}"
@@ -47,7 +47,7 @@ DUPLICITY_STATS="$(
     --file-prefix="${HOSTNAME}." \
     --name="${HOSTNAME}." \
     ${CUSTOM_DUPLICITY_OPTIONS} \
-    ${BACKUP_BACKEND} 2>&1 | grep -v -e Warning -e pkg_resources -e oslo)"
+    ${BACKUP_BACKEND} 2>&1 | grep -v -e Warning -e pkg_resources -e oslo -e tar)"
 for line in ${DUPLICITY_STATS}; do
         lecho "${line}"
 done

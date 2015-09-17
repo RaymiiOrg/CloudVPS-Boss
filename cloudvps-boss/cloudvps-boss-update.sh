@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.8"
+VERSION="1.9.1"
 TITLE="CloudVPS Boss Upgrade ${VERSION}"
 
 DL_SRV="https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn/"
@@ -29,47 +29,15 @@ if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
 fi
 source /etc/cloudvps-boss/common.sh
 
-
-failed_mail() {
-    for COMMAND in "mail"; do
-        command_exists "${COMMAND}"
-    done
-
-    mail -s "[CLOUDVPS BOSS] Update failed on ${HOSTNAME}/$(curl -s http://ip.raymii.org)." "${recipient}" <<MAIL
-
-Dear user,
-
-This is a message to inform you that the CloudVPS Boss automatic
-upgrade has not succeeded on date: $(date) (server date/time).
-
-You are using version ${VERSION}. CloudVPS Boss updates itself
-every sunday, and this time it has failed. Please investigate 
-the logging on this server to find out why.
-
-If you receive this email once, it might just be a one-off error. 
-
-If you receive this email more than once (for example, every week)
-then this server requires investigation. If so, please forward this email to support@cloudvps.com so we can check it for you.
-
-This is server $(curl -s http://ip.raymii.org). You are using CloudVPS Boss ${VERSION}
-to backup files to the CloudVPS Object Store.
-
-Kind regards,
-CloudVPS Boss
-MAIL
-}
-
-send_failed_mail() {
-    if [[ -f "/etc/cloudvps-boss/email.conf" ]]; then
-        while read recipient; do
-             failed_mail
-        done < /etc/cloudvps-boss/email.conf
-    else
-        lerror "No email file found. Not mailing"
-    fi
-}
-
 lecho "${TITLE} started on ${HOSTNAME} at $(date)."
+
+pushd () {
+    command pushd "$@" > /dev/null
+}
+
+popd () {
+    command popd "$@" > /dev/null
+}
 
 pushd /tmp 
 
@@ -99,12 +67,3 @@ popd
 
 pushd /tmp/cloudvps-boss
 bash install.sh
-if [[ $? -ne 0 ]]; then
-    lecho "Upgrade of cloudvps-boss failed. Emailing user."
-    send_failed_mail
-    rm -rf /tmp/cloudvps-boss
-    exit 1
-fi
-popd
-
-lecho "${TITLE} ended on ${HOSTNAME} at $(date)."

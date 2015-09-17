@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.8"
+VERSION="1.9.1"
 TITLE="CloudVPS Boss Failure Notify ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -64,13 +64,13 @@ Object Store has not succeeded on date: $(date) (server date/time).
 
 Here is some information:
 
-===== BEGIN CLOUDVPS BOSS ERROR LOG =====
-$(getlogging)
-===== END CLOUDVPS BOSS ERROR LOG =====
-
 ===== BEGIN CLOUDVPS BOSS STATS =====
 $(cloudvps-boss-stats)
 ===== END CLOUDVPS BOSS STATS =====
+
+===== BEGIN CLOUDVPS BOSS ERROR LOG =====
+$(getlogging)
+===== END CLOUDVPS BOSS ERROR LOG =====
 
 This is server $(curl -s http://ip.raymii.org). You are using CloudVPS Boss ${VERSION}
 to backup files to the CloudVPS Object Store.

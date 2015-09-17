@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.8"
+VERSION="1.9.1"
 TITLE="CloudVPS Boss Backup Verify ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -29,7 +29,7 @@ source /etc/cloudvps-boss/common.sh
 
 lecho "${TITLE} started on ${HOSTNAME} at $(date)."
 
-lecho "duplicity verify --volsize ${VOLUME_SIZE} --tempdir=\"${TEMPDIR}\" --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" --exclude-device-files --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf ${ENCRYPTION_OPTIONS} ${BACKUP_BACKEND} /"
+lecho "duplicity verify --volsize ${VOLUME_SIZE} --tempdir=\"${TEMPDIR}\" --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" --exclude-device-files --allow-source-mismatch --num-retries 100 --exclude-filelist=/etc/cloudvps-boss/exclude.conf ${ENCRYPTION_OPTIONS} ${BACKUP_BACKEND} /"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
@@ -40,7 +40,9 @@ DUPLICITY_OUTPUT=$(duplicity \
     --file-prefix="${HOSTNAME}." \
     --name="${HOSTNAME}." \
     --exclude-device-files \
-    --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf \
+    --allow-source-mismatch \
+    --num-retries 100 \
+    --exclude-filelist=/etc/cloudvps-boss/exclude.conf \
     ${ENCRYPTION_OPTIONS} \
     ${BACKUP_BACKEND} \
     / 2>&1 | grep -v  -e Warning -e pkg_resources -e oslo)
