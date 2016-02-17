@@ -1,6 +1,6 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2015 CloudVPS. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2016 CloudVPS. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.1"
+VERSION="1.9.6"
 TITLE="CloudVPS Boss Stats ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -47,7 +47,7 @@ DUPLICITY_STATS="$(
     --file-prefix="${HOSTNAME}." \
     --name="${HOSTNAME}." \
     ${CUSTOM_DUPLICITY_OPTIONS} \
-    ${BACKUP_BACKEND} 2>&1 | grep -v -e Warning -e pkg_resources -e oslo -e tar)"
+    ${BACKUP_BACKEND} 2>&1 | grep -v -e Warning -e pkg_resources -e oslo -e tar -e attr -e kwargs)"
 for line in ${DUPLICITY_STATS}; do
         lecho "${line}"
 done

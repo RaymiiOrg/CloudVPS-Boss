@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.9.6
+
+- Use pip requirements for install on Debian/CentOS 6
+- Remove async upload
+- Add apt-get update before first package install
+
+## 1.9.5
+
+- Add cleanup command, wrapper around duplicity cleanup.
+- Install specific versions of python libraries on Debian 6. Newer won't work with python 2.6.
+- Update uninstaller to remove more python libraries.
+
+## 1.9.4
+
+- Fix race condition
+
+## 1.9.3
+
+- Install specific versions of swiftclient, keystoneclient and oslo on CentOS 6. Newer won't work with python 2.6.
+
+## 1.9.2
+
+- Fix install issue with mixed pip/repo packages.
+
 ## 1.9.1
 
 - Remove requests workaround for ubuntu 14.04.

@@ -19,7 +19,10 @@
 # 
 
 VERSION="1.9.6"
-TITLE="CloudVPS Boss Start Status Upload ${VERSION}"
+TITLE="CloudVPS Boss Backup Cleanup ${VERSION}"
+
+## does not remove backup data. Manpage entry for cleanup:
+## Delete the extraneous duplicity files on the given backend. Non-duplicity files, or files in complete data sets will not be deleted. This should only be necessary after a duplicity session fails or is aborted prematurely. Note that --force will be needed to delete the files instead of just listing them.
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
     lerror "Cannot find /etc/cloudvps-boss/common.sh"
@@ -27,38 +30,30 @@ if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
 fi
 source /etc/cloudvps-boss/common.sh
 
-touch "/etc/cloudvps-boss/status/${HOSTNAME}/started"
-if [[ $? -ne 0 ]]; then
-    lerror "Cannot update status"
-    exit 1
-fi
+lecho "${TITLE} started on ${HOSTNAME} at $(date)."
+
+lecho "duplicity cleanup --extra-clean --force ${ENCRYPTION_OPTIONS} ${BACKUP_BACKEND}"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-SWIFTTOUCH=$(swift upload ${CONTAINER_NAME} "/etc/cloudvps-boss/status/${HOSTNAME}/started" --object-name "status/${HOSTNAME}/started" 2>&1 | grep -v -e Warning -e pkg_resources -e oslo)
+DUPLICITY_OUTPUT=$(duplicity \
+    cleanup
+    --extra-clean
+    --force
+    ${ENCRYPTION_OPTIONS} \
+    ${BACKUP_BACKEND} 2>&1 | grep -v  -e Warning -e pkg_resources -e oslo)
+
 if [[ $? -ne 0 ]]; then
-    lerror "Could not upload status"
-    for line in ${SWIFTTOUCH}; do
-        lerror ${line}
+    for line in ${DUPLICITY_OUTPUT}; do
+            lerror ${line}
     done
+    lerror "CloudVPS Boss Cleanup FAILED!. Please check server ${HOSTNAME}."
 fi
+
+for line in ${DUPLICITY_OUTPUT}; do
+        lecho "${line}"
+done
 IFS="${OLD_IFS}"
 
-
-lecho "Logging version of CloudVPS Boss to Object Store: ${VERSION}"
-
-touch "/etc/cloudvps-boss/status/${HOSTNAME}/version-${VERSION}"
-if [[ $? -ne 0 ]]; then
-    lerror "Cannot update version"
-fi
-
-OLD_IFS="${IFS}"
-IFS=$'\n'
-SWIFTTOUCH=$(swift upload ${CONTAINER_NAME} "/etc/cloudvps-boss/status/${HOSTNAME}/version-${VERSION}" --object-name "status/${HOSTNAME}/version-${VERSION}" 2>&1 | grep -v -e UserWarning -e pkg_resources -e oslo)
-if [[ $? -ne 0 ]]; then
-    lerror "Could not upload version"
-    for line in ${SWIFTTOUCH}; do
-        lerror ${line}
-    done
-fi
-IFS="${OLD_IFS}"
+echo
+lecho "CloudVPS Boss Cnealup ${VERSION} ended on $(date)."

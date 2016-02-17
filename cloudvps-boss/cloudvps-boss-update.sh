@@ -1,6 +1,6 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2015 CloudVPS. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2016 CloudVPS. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.1"
+VERSION="1.9.6"
 TITLE="CloudVPS Boss Upgrade ${VERSION}"
 
 DL_SRV="https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn/"
@@ -39,20 +39,24 @@ popd () {
     command popd "$@" > /dev/null
 }
 
-pushd /tmp 
-
-if [[ -f "/tmp/cloudvps-boss.tar.gz" ]]; then
-    lecho "Removing old update file from /tmp/cloudvps-boss.tar.gz"
-    rm -rf /tmp/cloudvps-boss.tar.gz
+if [[ ! -d "/root/.cloudvps-boss" ]]; then
+    mkdir -p "/root/.cloudvps-boss"
 fi
 
-if [[ -d "/tmp/cloudvps-boss" ]]; then
-    lecho "Removing old update folder from /tmp/cloudvps-boss"
-    rm -rf /tmp/cloudvps-boss
+pushd /root/.cloudvps-boss
+
+if [[ -f "/root/.cloudvps-boss/cloudvps-boss.tar.gz" ]]; then
+    lecho "Removing old update file from /root/.cloudvps-boss/cloudvps-boss.tar.gz"
+    rm -rf /root/.cloudvps-boss/cloudvps-boss.tar.gz
+fi
+
+if [[ -d "/root/.cloudvps-boss/cloudvps-boss" ]]; then
+    lecho "Removing old update folder from /root/.cloudvps-boss/cloudvps-boss"
+    rm -rf /root/.cloudvps-boss/cloudvps-boss
 fi
 
 lecho "Downloading CloudVPS Boss from ${DL_SRV}cloudvps-boss_latest.tar.gz"
-get_file "/tmp/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
+get_file "/root/.cloudvps-boss/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
 if [[ $? -ne 0 ]]; then
     lecho "Download of cloudvps-boss failed. Check firewall and network connectivity."
     exit 1
@@ -60,10 +64,10 @@ fi
 
 tar -xf cloudvps-boss.tar.gz
 if [[ $? -ne 0 ]]; then
-    lecho "Extraction of cloudvps-boss in /tmp failed."
+    lecho "Extraction of cloudvps-boss in /root/.cloudvps-boss failed."
     exit 1
 fi
 popd
 
-pushd /tmp/cloudvps-boss
+pushd /root/.cloudvps-boss/cloudvps-boss
 bash install.sh
