@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.6"
+VERSION="1.9.8"
 TITLE="CloudVPS Boss Log Clean ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -30,7 +30,7 @@ source /etc/cloudvps-boss/common.sh
 if [[ -f "/var/log/duplicity.log" ]]; then
     # If it's larger than 2 GB
     if [[ "$(wc -c /var/log/duplicity.log)" > "2147483648" ]]; then
-        log "strace log larger than 2 GB, cleaning up."
+        log "error log larger than 2 GB, cleaning up."
         echo " " > /var/log/duplicity.log
     fi
 fi

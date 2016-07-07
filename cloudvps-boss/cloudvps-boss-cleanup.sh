@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.6"
+VERSION="1.9.8"
 TITLE="CloudVPS Boss Backup Cleanup ${VERSION}"
 
 ## does not remove backup data. Manpage entry for cleanup:
@@ -32,14 +32,14 @@ source /etc/cloudvps-boss/common.sh
 
 lecho "${TITLE} started on ${HOSTNAME} at $(date)."
 
-lecho "duplicity cleanup --extra-clean --force ${ENCRYPTION_OPTIONS} ${BACKUP_BACKEND}"
+lecho "duplicity cleanup --extra-clean --force ${BACKUP_BACKEND}"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
 DUPLICITY_OUTPUT=$(duplicity \
-    cleanup
-    --extra-clean
-    --force
+    cleanup \
+    --extra-clean \
+    --force \
     ${ENCRYPTION_OPTIONS} \
     ${BACKUP_BACKEND} 2>&1 | grep -v  -e Warning -e pkg_resources -e oslo)
 

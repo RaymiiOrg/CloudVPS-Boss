@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.9.8
+
+- Update Duplicity to 0.7.08
+- Remove Arch and Fedora from the installer
+- Use pip requirements for install on CentOS 7 & Debian 7
+- Fix issue in cleanup script
+
+
+## 1.9.7
+
+- Update Duplicity to 0.7.07.1
+- Add support for Ubuntu 16.04
+- Remove CentOS 5 and Debian 6 from the installer
+- Fix issue in cleanup script
+
 ## 1.9.6
 
 - Use pip requirements for install on Debian/CentOS 6
