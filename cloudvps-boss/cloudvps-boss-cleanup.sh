@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.8"
+VERSION="1.9.10"
 TITLE="CloudVPS Boss Backup Cleanup ${VERSION}"
 
 ## does not remove backup data. Manpage entry for cleanup:
@@ -56,4 +56,4 @@ done
 IFS="${OLD_IFS}"
 
 echo
-lecho "CloudVPS Boss Cnealup ${VERSION} ended on $(date)."
+lecho "CloudVPS Boss Cleanup ${VERSION} ended on $(date)."

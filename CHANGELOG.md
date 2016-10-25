@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.9.10
+
+- Update Duplicity to 0.7.10
+- Do not run fail scripts after a failed cleanup. 
+
+## 1.9.9
+
+- Update Duplicity to 0.7.09
+- Fix typo's
+
 ## 1.9.8
 
 - Update Duplicity to 0.7.08
