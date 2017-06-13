@@ -52,7 +52,7 @@ lecho "duplicity --verbosity 9 --log-file /var/log/duplicity.log --volsize ${VOL
 OLD_IFS="${IFS}"
 IFS=$'\n'
 DUPLICITY_OUTPUT=$(duplicity \
-    --verbosity 9 \
+    --verbosity 4 \
     --log-file /var/log/duplicity.log \
     --volsize=${VOLUME_SIZE} \
     --tempdir="${TEMPDIR}" \
@@ -96,7 +96,7 @@ lecho "duplicity --verbosity 9 --log-file /var/log/duplicity.log --file-prefix=\
 OLD_IFS="${IFS}"
 IFS=$'\n'
 DUPLICITY_CLEANUP_OUTPUT=$(duplicity \
-    --verbosity 9 \
+    --verbosity 4 \
     --log-file /var/log/duplicity.log \
     --file-prefix="${HOSTNAME}." \
     --name="${HOSTNAME}." \

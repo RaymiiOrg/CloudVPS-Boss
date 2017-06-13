@@ -158,7 +158,7 @@ oslo.i18n==2.7.0
 oslo.serialization==2.2.0
 oslo.utils==2.7.0
 paramiko==1.10.1
-pbr==1.8.1
+pbr==3.0.1
 prettytable==0.7.2
 pycrypto==2.6
 pycurl==7.19.0
@@ -175,6 +175,7 @@ wrapt==1.10.6
 wsgiref==0.1.2
 yolk==0.4.3
 fasteners==0.14.1
+keystoneauth1==2.9.0
 EOF
 
     PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
@@ -242,6 +243,25 @@ install_duplicity_debian_8() {
             lerror "'add-apt-repository cloud-archive:icehouse' failed." 
             exit 1
         fi        
+           
+        mkdir -p '/usr/local/cloudvps-boss/source/duplicity'
+        if [[ "$?" -ne 0 ]]; then
+            lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed." 
+            exit 1
+        fi
+
+        touch "/usr/local/cloudvps-boss/requirements.txt"
+        chmod 600 "/usr/local/cloudvps-boss/requirements.txt"
+        cat << EOF > /usr/local/cloudvps-boss/requirements.txt
+fasteners==0.14.1
+EOF
+
+        PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
+        if [[ "$?" -ne 0 ]]; then
+            lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed." 
+            exit 1
+        fi
+
     fi
     
     APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)" 
