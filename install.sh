@@ -1,6 +1,6 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2016 CloudVPS. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -20,7 +20,7 @@
 
 set -o pipefail
 
-VERSION="1.9.10"
+VERSION="1.9.11"
 TITLE="CloudVPS Boss Install ${VERSION}"
 
 if [[ ${DEBUG} == "1" ]]; then
@@ -138,38 +138,23 @@ install_packages_debian() {
         lerror "'apt-get update' failed." 
         exit 1
     fi
-    for PACKAGE in awk sed grep tar gzip which openssl ionice nice curl wget screen vim haveged unattended-upgrades; do 
+    for PACKAGE in awk sed grep tar gzip which openssl curl wget screen vim haveged unattended-upgrades; do 
         /usr/bin/apt-get -qq -y --force-yes -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" install "${PACKAGE}" >/dev/null 2>&1
     done
-    cat << EOF > /etc/apt/apt.conf.d/10periodic
-APT::Periodic::Update-Package-Lists "1";
-APT::Periodic::Download-Upgradeable-Packages "1";
-APT::Periodic::AutocleanInterval "7";
-APT::Periodic::Unattended-Upgrade "1";
-EOF
-
-    cat << EOF > /etc/apt/apt.conf.d/20auto-upgrades
-APT::Periodic::Update-Package-Lists "1";
-APT::Periodic::Unattended-Upgrade "1";
-APT::Periodic::RandomSleep "1";
-EOF
-
 }
 
 install_packages_arch() {
     lecho "Installing packages required for installation."
-    for PACKAGE in awk sed grep tar gzip which openssl ionice nice curl wget screen vim haveged; do 
+    for PACKAGE in awk sed grep tar gzip which openssl curl wget screen vim haveged; do 
         pacman -S --force --noconfirm --needed "${PACKAGE}" >/dev/null 2>&1 
     done
 }
 
 install_packages_centos() {
     lecho "Installing packages required for installation."
-    for PACKAGE in awk sed grep tar gzip which openssl ionice nice curl wget screen vim haveged yum-cron; do 
+    for PACKAGE in awk sed grep tar gzip which openssl curl wget screen vim haveged yum-cron; do 
         yum -q -y --disablerepo="*" --disableexcludes=main --enablerepo="base" --enablerepo="updates" install "${PACKAGE}" >/dev/null 2>&1
     done
-    chkconfig yum-cron on 2>&1 >/dev/null
-
 }
 
 DISTRO_NAME=$(distro_version name)
@@ -203,7 +188,7 @@ case "${DISTRO_NAME}" in
     ;;
 esac
 
-for COMMAND in "awk" "sed" "grep" "tar" "gzip" "which" "openssl" "ionice" "nice" "curl"; do
+for COMMAND in "awk" "sed" "grep" "tar" "gzip" "which" "openssl" "curl"; do
     command_exists "${COMMAND}"
 done
 
@@ -277,7 +262,7 @@ for COPY_FILE in "README.md" "README.html" "LICENSE.md" "CHANGELOG.md"; do
     fi
 done
 
-for COPY_FILE in "cloudvps-boss.cron" "backup.conf" "cloudvps-boss-encryption-setup.sh" "cloudvps-boss-list-current-files.sh" "cloudvps-boss-verify.sh" "cloudvps-boss-cleanup.sh" "cloudvps-boss-restore.sh" "cloudvps-boss.sh" "cloudvps-boss-stats.sh" "cloudvps-boss-update.sh" "cloudvps-boss-progress.sh" "common.sh" "exclude.conf" "uninstall.sh"; do
+for COPY_FILE in "cloudvps-boss.cron" "backup.conf" "cloudvps-boss-encryption-setup.sh" "cloudvps-boss-list-current-files.sh" "cloudvps-boss-verify.sh" "cloudvps-boss-cleanup.sh" "cloudvps-boss-restore.sh" "cloudvps-boss.sh" "cloudvps-boss-stats.sh" "cloudvps-boss-update.sh" "common.sh" "exclude.conf" "uninstall.sh"; do
     cp "cloudvps-boss/${COPY_FILE}" "/etc/cloudvps-boss/${COPY_FILE}"
     if [[ "$?" -ne 0 ]]; then
         lerror "Cannot copy cloudvps-boss/${COPY_FILE} to /etc/cloudvps-boss/${COPY_FILE}."
@@ -291,7 +276,7 @@ for COPY_FILE in "10-upload-starting-status.sh" "11_lockfile_check.sh" "15-mysql
     fi
 done
 
-for COPY_FILE in "10-upload-completed-status.sh" "15-clean-verbose-log.sh"; do
+for COPY_FILE in "10-upload-completed-status.sh"; do
     cp "cloudvps-boss/post-backup.d/${COPY_FILE}" "/etc/cloudvps-boss/post-backup.d/${COPY_FILE}"
     if [[ "$?" -ne 0 ]]; then
         lerror "Cannot copy cloudvps-boss/${COPY_FILE} to /etc/cloudvps-boss/post-backup.d/${COPY_FILE}."
@@ -363,16 +348,30 @@ if [[ ! -d "/usr/local/bin" ]]; then
     mkdir -p "/usr/local/bin"
 fi
 
-for COMMAND in "cloudvps-boss.sh" "cloudvps-boss-restore.sh" "cloudvps-boss-stats.sh" "cloudvps-boss-update.sh" "cloudvps-boss-cleanup.sh" "cloudvps-boss-list-current-files.sh" "cloudvps-boss-progress.sh"; do
-
+for COMMAND in "cloudvps-boss.sh" "cloudvps-boss-restore.sh" "cloudvps-boss-stats.sh" "cloudvps-boss-update.sh" "cloudvps-boss-cleanup.sh" "cloudvps-boss-list-current-files.sh"; do
     log "Creating symlink for /etc/cloudvps-boss/${COMMAND} in /usr/local/bin/${COMMAND%.sh}."
     chmod +x "/etc/cloudvps-boss/${COMMAND}"
     ln -fs "/etc/cloudvps-boss/${COMMAND}" "/usr/local/bin/${COMMAND%.sh}"
 done
 
-for FILE in "pre-backup.d/15-mysql_backup.sh" "pre-backup.d/15-postgresql_backup.sh" "post-backup.d/10-upload-completed-status.sh" "pre-backup.d/10-upload-starting-status.sh" "pre-backup.d/11_lockfile_check.sh" "post-fail-backup.d/10-upload-fail-status.sh" "post-fail-backup.d/20-failure-notify.sh" "post-backup.d/15-clean-verbose-log.sh"; do
+for FILE in "pre-backup.d/15-mysql_backup.sh" "pre-backup.d/15-postgresql_backup.sh" "post-backup.d/10-upload-completed-status.sh" "pre-backup.d/10-upload-starting-status.sh" "pre-backup.d/11_lockfile_check.sh" "post-fail-backup.d/10-upload-fail-status.sh" "post-fail-backup.d/20-failure-notify.sh"; do
     # make sure all files are executable
     chmod +x "/etc/cloudvps-boss/${FILE}"
+done
+
+for FILE in "cloudvps-boss-progress.sh" "post-backup.d/15-clean-verbose-log.sh"; do
+    if [[ -f "${FILE}" ]]; then
+        # progress script is broken.
+        # log cleaning should be done by logrotate.
+        rm "/etc/cloudvps-boss/${FILE}"
+    fi
+done
+
+for FILE in "cloudvps-boss-progress"; do
+    if [[ -L "${FILE}" ]]; then
+        # also remove symlink
+        rm "/usr/local/bin/${FILE}"
+    fi
 done
 
 if [[ -f "/usr/local/share/man/man1/duplicity.1" ]]; then

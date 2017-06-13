@@ -1,6 +1,6 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2016 CloudVPS. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -20,8 +20,8 @@
 
 set -o pipefail
 
-VERSION="1.9.10"
-DUPLICITY_VERSION="0.7.10"
+VERSION="1.9.11"
+DUPLICITY_VERSION="0.7.13"
 TITLE="CloudVPS Boss Duplicity Installer ${VERSION}"
 DL_SRV="https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn" # no ending slash (/)
 
@@ -174,6 +174,7 @@ urlgrabber==3.9.1
 wrapt==1.10.6
 wsgiref==0.1.2
 yolk==0.4.3
+fasteners==0.14.1
 EOF
 
     PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
@@ -370,7 +371,8 @@ requests==2.9.1
 six==1.10.0
 stevedore==1.10.0
 urlgrabber==3.9.1
-wrapt==1.10.6    
+wrapt==1.10.6   
+fasteners==0.14.1 
 EOF
 
 
@@ -504,6 +506,7 @@ six==1.10.0
 stevedore==1.15.0
 urlgrabber==3.10
 wrapt==1.10.8
+fasteners==0.14.1
 EOF
 
     PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"

@@ -1,6 +1,6 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2016 CloudVPS. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -19,7 +19,7 @@
 # 
 
 
-VERSION="1.9.10"
+VERSION="1.9.11"
 TITLE="CloudVPS Boss MySQL Backup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then

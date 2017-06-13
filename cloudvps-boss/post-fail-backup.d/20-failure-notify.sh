@@ -1,6 +1,6 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2016 CloudVPS. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.10"
+VERSION="1.9.11"
 TITLE="CloudVPS Boss Failure Notify ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -39,7 +39,8 @@ done
 
 getlogging() {
     if [[ -f /var/log/duplicity.log ]]; then
-        grep -v -e 'INFO' -e 'Import' -e 'Main action' -e '. A ' -e '. D ' -e 'Another' -e 'If you are sure' -e 'the following lockfile' -e '/root/.cache' -e 'Using temporary' -e '^$' -e 'NOTICE 1' -e 'globbing filelist' -e 'backup name' -e 'ERROR 23' -e 'Skipping socket' -e 'Deleting /tmp' -e 'AsyncScheduler' -e 'Uploading ' -e '. M ' -e 'Added incremental' -e 'Ignoring incremental'  /var/log/duplicity.log 
+        lecho "200 most recent lines in /var/log/duplicity.log:"
+        tail -n 200  /var/log/duplicity.log 
 
     fi
     if [[ -f "/var/log/messages" ]]; then

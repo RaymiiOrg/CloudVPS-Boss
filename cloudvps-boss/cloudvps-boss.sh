@@ -1,6 +1,6 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2016 CloudVPS. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
 # 
 # This program is free software; you can redistribute it and/or modify it 
@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.10"
+VERSION="1.9.11"
 TITLE="CloudVPS Boss Backup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -47,12 +47,12 @@ echo
 lecho "Create full backup if last full backup is older than: ${FULL_IF_OLDER_THAN} and keep at max ${FULL_TO_KEEP} full backups."
 lecho "Starting Duplicity"
 
-lecho "ionice -c2 nice -n19 duplicity --verbosity 9 --log-file /var/log/duplicity.log --volsize ${VOLUME_SIZE} --tempdir=\"${TEMPDIR}\" --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" --exclude-device-files --allow-source-mismatch --num-retries 100 --exclude-filelist=/etc/cloudvps-boss/exclude.conf --full-if-older-than=\"${FULL_IF_OLDER_THAN}\" ${ENCRYPTION_OPTIONS} ${CUSTOM_DUPLICITY_OPTIONS} / ${BACKUP_BACKEND}"
+lecho "duplicity --verbosity 9 --log-file /var/log/duplicity.log --volsize ${VOLUME_SIZE} --tempdir=\"${TEMPDIR}\" --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" --exclude-device-files --allow-source-mismatch --num-retries 100 --exclude-filelist=/etc/cloudvps-boss/exclude.conf --full-if-older-than=\"${FULL_IF_OLDER_THAN}\" ${ENCRYPTION_OPTIONS} ${CUSTOM_DUPLICITY_OPTIONS} / ${BACKUP_BACKEND}"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-DUPLICITY_OUTPUT=$(ionice -c2 nice -n19 duplicity \
-    --verbosity 4 \
+DUPLICITY_OUTPUT=$(duplicity \
+    --verbosity 9 \
     --log-file /var/log/duplicity.log \
     --volsize=${VOLUME_SIZE} \
     --tempdir="${TEMPDIR}" \
@@ -91,11 +91,13 @@ IFS="${OLD_IFS}"
 
 echo 
 lecho "CloudVPS Boss Cleanup ${VERSION} started on $(date). Removing all but ${FULL_TO_KEEP} full backups."
-lecho "ionice -c2 nice -n19 duplicity --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" remove-all-but-n-full \"${FULL_TO_KEEP}\" ${ENCRYPTION_OPTIONS} --force  ${BACKUP_BACKEND}"
+lecho "duplicity --verbosity 9 --log-file /var/log/duplicity.log --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" remove-all-but-n-full \"${FULL_TO_KEEP}\" ${ENCRYPTION_OPTIONS} --force  ${BACKUP_BACKEND}"
 
 OLD_IFS="${IFS}"
 IFS=$'\n'
-DUPLICITY_CLEANUP_OUTPUT=$(ionice -c2 nice -n19 duplicity \
+DUPLICITY_CLEANUP_OUTPUT=$(duplicity \
+    --verbosity 9 \
+    --log-file /var/log/duplicity.log \
     --file-prefix="${HOSTNAME}." \
     --name="${HOSTNAME}." \
     remove-all-but-n-full \

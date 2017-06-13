@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.11
+
+- Update Duplicity to 0.7.13
+- Remove progress script
+
 ## 1.9.10
 
 - Update Duplicity to 0.7.10
