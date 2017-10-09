@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.11"
+VERSION="1.9.12"
 TITLE="CloudVPS Boss Encryption Setup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -45,6 +45,8 @@ echo "You are going to set up encryption for your backups."
 echo "You need to have a good key backup, testing and recovery"
 echo "procedure. A lot of information will be shown on the "
 echo "screen when the setup is done. Make sure to back that up."
+echo ""
+echo "Please note that when encryption is set up, support from CloudVPS is not possible."
 echo ""
 read -e -p "Please type 'I have a good key management procedure and want to set up encryption.': " CONFIRM_ENCRYPTION_SETUP
 

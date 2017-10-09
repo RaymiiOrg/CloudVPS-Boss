@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.11"
+VERSION="1.9.12"
 TITLE="CloudVPS Boss Failure Notify ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -42,14 +42,15 @@ getlogging() {
         lecho "200 most recent lines in /var/log/duplicity.log:"
         tail -n 200  /var/log/duplicity.log 
 
-    fi
-    if [[ -f "/var/log/messages" ]]; then
-        lecho "10 most recent lines with cloudvps-boss ERROR in /var/log/messages:"
-        grep "cloudvps-boss: ERROR" /var/log/messages | tail -n 10
-    fi
-    if [[ -f "/var/log/syslog" ]]; then
-        lecho "10 most recent lines with cloudvps-boss ERROR in /var/log/syslog:"
-        grep "cloudvps-boss: ERROR" /var/log/syslog | tail -n 10
+    else
+        if [[ -f "/var/log/messages" ]]; then
+            lecho "10 most recent lines with cloudvps-boss ERROR in /var/log/messages:"
+            grep "cloudvps-boss: ERROR" /var/log/messages | tail -n 10
+        fi
+        if [[ -f "/var/log/syslog" ]]; then
+            lecho "10 most recent lines with cloudvps-boss ERROR in /var/log/syslog:"
+            grep "cloudvps-boss: ERROR" /var/log/syslog | tail -n 10
+        fi
     fi
     
 }

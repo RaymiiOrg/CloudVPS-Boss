@@ -20,8 +20,8 @@
 
 set -o pipefail
 
-VERSION="1.9.11"
-DUPLICITY_VERSION="0.7.13"
+VERSION="1.9.12"
+DUPLICITY_VERSION="0.7.14"
 TITLE="CloudVPS Boss Duplicity Installer ${VERSION}"
 DL_SRV="https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn" # no ending slash (/)
 
@@ -263,13 +263,42 @@ EOF
         fi
 
     fi
+
+    #fasteners is not in 14.04
+    if [[ "${DISTRO_VERSION}" == "14.04" ]]; then
+        mkdir -p '/usr/local/cloudvps-boss/source/duplicity'
+        if [[ "$?" -ne 0 ]]; then
+            lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed." 
+            exit 1
+        fi
+
+        touch "/usr/local/cloudvps-boss/requirements.txt"
+        chmod 600 "/usr/local/cloudvps-boss/requirements.txt"
+        cat << EOF > /usr/local/cloudvps-boss/requirements.txt
+fasteners==0.14.1
+EOF
+
+        PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
+        if [[ "$?" -ne 0 ]]; then
+            lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed." 
+            exit 1
+        fi
+    fi
     
+    if [[ "${DISTRO_VERSION}" == "16.04" || "${DISTRO_VERSION}" == "15.04" || "${DISTRO_VERSION}" == "15.10" || "${DISTRO_VERSION}" == "16.10" || "${DISTRO_VERSION}" == "17.04" ]]; then
+        APT_INSTALL="$(apt-get -qq -y --force-yes install python-fasteners 2>&1)"
+        if [[ "$?" -ne 0 ]]; then
+            lerror "'apt-get install python-fasteners' failed." 
+            exit 1
+        fi
+    fi
+
     APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)" 
     if [[ "$?" -ne 0 ]]; then
         lerror "'apt-get update' failed." 
         exit 1
     fi
-    
+
     APT_INSTALL="$(apt-get -qq -y --force-yes install util-linux wget dialog libc6 python build-essential libxslt1-dev libxml2-dev librsync-dev git-core python-dev python-setuptools librsync1 python-lockfile python-pip python-keystoneclient python-swiftclient 2>&1)"
     if [[ "$?" -ne 0 ]]; then
         lerror "'apt-get install util-linux wget dialog libc6 python build-essential libxslt1-dev libxml2-dev librsync-dev git-core python-dev python-setuptools librsync1 python-lockfile python-pip python-keystoneclient python-swiftclient' failed." 
@@ -511,7 +540,6 @@ oslo.utils==3.14.0
 pbr==1.10.0
 prettytable==0.7.2
 pycurl==7.19.0
-pygobject==3.14.0
 pygpgme==0.3
 pyliblzma==0.5.3
 pyparsing==1.5.6

@@ -20,7 +20,7 @@
 
 set -o pipefail
 
-VERSION="1.9.11"
+VERSION="1.9.12"
 TITLE="CloudVPS Boss Install ${VERSION}"
 
 if [[ ${DEBUG} == "1" ]]; then
@@ -208,10 +208,19 @@ if [[ -f "/etc/csf/csf.fignore" ]]; then
         #-A OUTPUT -d 89.31.101.64/27 ! -o lo -p tcp -m tcp --dport 443 -j ACCEPT 
         # Add a rule for the CloudVPS object store to CSF
         lecho "Adding exceptions for csf."
-        csf -a "tcp|out|d=443|d=89.31.101.64/27" "CloudVPS Boss Object Store" 2>&1 > /dev/null
+        csf -a "tcp|out|d=443|d=89.31.101.64/27" "CloudVPS Boss Object Store for backup" 2>&1 > /dev/null
         service csf restart 2>&1 > /dev/null
         csf -r 2>&1 > /dev/null
     fi    
+    if [[ ! "$(grep '31.3.100.121' /etc/csf/csf.allow)" ]]; then
+        # for regular iptables
+        #-A OUTPUT -d 31.3.100.121/29 ! -o lo -p tcp -m tcp --dport 443 -j ACCEPT 
+        # Add a rule for the CloudVPS object store to CSF
+        lecho "Adding exceptions for csf."
+        csf -a "tcp|out|d=443|d=31.3.100.121/29" "CloudVPS Boss Object Store for backup 2" 2>&1 > /dev/null
+        service csf restart 2>&1 > /dev/null
+        csf -r 2>&1 > /dev/null
+    fi  
 fi
 
 if [[ -d "/etc/cloudvps-boss" ]]; then
@@ -255,7 +264,7 @@ log "Extracting to /etc/cloudvps-boss/"
 # some users do a chattr +i on stuff they don't want
 # overwritten. A cp -r fails and leaves inconsistent state,
 # a manual copy only fails the chattr'd things.
-for COPY_FILE in "README.md" "README.html" "LICENSE.md" "CHANGELOG.md"; do
+for COPY_FILE in "README.md" "LICENSE.md" "CHANGELOG.md"; do
     cp "${COPY_FILE}" "/etc/cloudvps-boss/${COPY_FILE}"
     if [[ "$?" -ne 0 ]]; then
         lerror "Cannot copy ${COPY_FILE} to /etc/cloudvps-boss/${COPY_FILE}."

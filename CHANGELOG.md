@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.12
+
+- Update Duplicity to 0.7.14
+- Remove pygobj dependency
+- Don't chmod backup folder
+- Remove duplicate log from error email
+- Add new object store IP range to firewall
+
 ## 1.9.11
 
 - Update Duplicity to 0.7.13

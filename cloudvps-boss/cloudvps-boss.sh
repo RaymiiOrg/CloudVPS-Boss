@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.11"
+VERSION="1.9.12"
 TITLE="CloudVPS Boss Backup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -113,7 +113,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 for line in ${DUPLICITY_CLEANUP_OUTPUT}; do
-        lecho "${line}"
+        lecho "cleanup: ${line}"
 done
 IFS="${OLD_IFS}"
 

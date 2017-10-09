@@ -19,7 +19,7 @@
 # 
 
 
-VERSION="1.9.11"
+VERSION="1.9.12"
 TITLE="CloudVPS Boss MySQL Backup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -87,8 +87,6 @@ fi
 if [[ ! -d "/var/backups/sql" ]]; then
     mkdir -p "/var/backups/sql"
 fi
-
-chmod 777 "/var/backups/sql"
 
 for COMMAND in "mysql" "mysqldump"; do
     command_exists "${COMMAND}"

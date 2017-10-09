@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.11"
+VERSION="1.9.12"
 TITLE="CloudVPS Boss Backup Cleanup ${VERSION}"
 
 ## does not remove backup data. Manpage entry for cleanup:
