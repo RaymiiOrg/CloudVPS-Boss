@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
 
-VERSION="1.9.12"
+VERSION="1.9.13"
 TITLE="CloudVPS Boss Upgrade ${VERSION}"
 
 DL_SRV="https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn/"
@@ -53,6 +53,21 @@ fi
 if [[ -d "/root/.cloudvps-boss/cloudvps-boss" ]]; then
     lecho "Removing old update folder from /root/.cloudvps-boss/cloudvps-boss"
     rm -rf /root/.cloudvps-boss/cloudvps-boss
+fi
+
+if [[ -f "/etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh" ]]; then
+    lecho "Removing the old lockfile-check script at /etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh - Cleanup for consistency."
+    rm -f /etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh
+fi
+
+if [[ -f "/etc/cloudvps-boss/pre-backup.d/15-mysql_backup.sh" ]]; then
+    lecho "Removing the old 15-mysql_backup script at /etc/cloudvps-boss/pre-backup.d/15-mysql_backup.sh - Cleanup for consistency."
+    rm -f /etc/cloudvps-boss/pre-backup.d/15-mysql_backup.sh
+fi
+
+if [[ -f "/etc/cloudvps-boss/pre-backup.d/15-postgresql_backup.sh" ]]; then
+    lecho "Removing the old 15-mysql_backup script at /etc/cloudvps-boss/pre-backup.d/15-postgresql_backup - Cleanup for consistency."
+    rm -f /etc/cloudvps-boss/pre-backup.d/15-postgresql_backup.sh
 fi
 
 lecho "Downloading CloudVPS Boss from ${DL_SRV}cloudvps-boss_latest.tar.gz"

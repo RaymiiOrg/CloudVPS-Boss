@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.13
+- Refactor the name of 11_lockfile_check, 15-mysql_backup and 15-postgresql_backup to be consistent (dash vs underscore)
+- Add the option to specify scripts to be excluded in the backup progress in the backup.conf
+- Update the readme for that feature
+
 ## 1.9.12
 
 - Update Duplicity to 0.7.14
