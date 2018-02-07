@@ -55,6 +55,11 @@ if [[ -d "/root/.cloudvps-boss/cloudvps-boss" ]]; then
     rm -rf /root/.cloudvps-boss/cloudvps-boss
 fi
 
+if [[ -f "/etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh" ]]; then
+    lecho "Removing the old lockfile-check file at /etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh - Cleanup, typo."
+    rm -rf /root/.cloudvps-boss/cloudvps-boss.tar.gz
+fi
+
 lecho "Downloading CloudVPS Boss from ${DL_SRV}cloudvps-boss_latest.tar.gz"
 get_file "/root/.cloudvps-boss/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
 if [[ $? -ne 0 ]]; then

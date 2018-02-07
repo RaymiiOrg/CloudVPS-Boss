@@ -34,10 +34,12 @@ lecho "Running pre-backup scripts from /etc/cloudvps-boss/pre-backup.d/"
 for SCRIPT in /etc/cloudvps-boss/pre-backup.d/*; do
     if [[ ! -d "${SCRIPT}" ]]; then
         if [[ -x "${SCRIPT}" ]]; then
-            log "${SCRIPT}"
-            ionice -c2 nice -n19 "${SCRIPT}"
-            if [[ $? -ne 0 ]]; then
-                lerror "Pre backup script ${SCRIPT} failed."
+            if [[ ! " ${PRE_BACKUP_IGNORE[@]} " =~ " ${SCRIPT} " ]]; then
+                log "${SCRIPT}"
+                ionice -c2 nice -n19 "${SCRIPT}"
+                if [[ $? -ne 0 ]]; then
+                    lerror "Pre backup script ${SCRIPT} failed."
+                fi
             fi
         fi
     fi
@@ -77,7 +79,9 @@ if [[ $? -ne 0 ]]; then
     for SCRIPT in /etc/cloudvps-boss/post-fail-backup.d/*; do
         if [[ ! -d "${SCRIPT}" ]]; then
             if [[ -x "${SCRIPT}" ]]; then
-                "${SCRIPT}" || lerror "Post fail backup script ${SCRIPT} failed."
+                if [[ ! " ${POST_FAIL_BACKUP_IGNORE[@]} " =~ " ${SCRIPT} " ]]; then
+                    "${SCRIPT}" || lerror "Post fail backup script ${SCRIPT} failed."
+                fi
             fi
         fi
     done
@@ -122,7 +126,9 @@ lecho "Running post-backup scripts from /etc/cloudvps-boss/post-backup.d/"
 for SCRIPT in /etc/cloudvps-boss/post-backup.d/*; do
     if [[ ! -d "${SCRIPT}" ]]; then
         if [[ -x "${SCRIPT}" ]]; then
-            "${SCRIPT}" || lerror "Post backup script ${SCRIPT} failed."
+            if [[ ! " ${POST_BACKUP_IGNORE[@]} " =~ " ${SCRIPT} " ]]; then
+                "${SCRIPT}" || lerror "Post backup script ${SCRIPT} failed."
+            fi
         fi
     fi
 done
