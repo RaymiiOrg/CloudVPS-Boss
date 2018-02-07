@@ -19,7 +19,7 @@
 # 
 
 
-VERSION="1.9.12"
+VERSION="1.9.13"
 TITLE="CloudVPS Boss MySQL Backup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
