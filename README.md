@@ -257,6 +257,7 @@ The install script creates a default configuration for the backup process, with 
 - Create a full backup every 14 days
 - Keep at max 6 full backups
 - Create an incremental backup on the other days, once a day.
+- Ignores none of the default backup scripts
 
 This gives you 3 months of retention. The settings can be found in `/etc/cloudvps-boss/backup.conf`:
 
@@ -268,6 +269,11 @@ This gives you 3 months of retention. The settings can be found in `/etc/cloudvp
     FULL_TO_KEEP="6"
     # Only change this if your tmp folder is to small. See README
     TEMPDIR="/tmp"
+    
+    # Define scripts to be ignored
+    PRE_BACKUP_IGNORE=()
+    POST_BACKUP_IGNORE=()
+    POST_FAIL_BACKUP_IGNORE=()
 
 If you want more or less retention, change the variables. For one week of retention, create a full backup if the other full is older than 7 days and keep at max 1 full backup. If you want a month of retention, create a full backup if the other full is older than 7 days and keep at max 4 full backups. 
 
@@ -276,6 +282,17 @@ You can increase the amount of days before a full backup is created. Duplicity w
 Note that full backups have a positive effect on restore speeds, but a negative effect on the amount of storage needed. Increase the relative number of full backups for better speed, or lower it for less storage.
 
 To get 6 months of retention with just one full backup, create a full backup if the other full is older than 6 months (6M) and keep at max 1 full backup.
+
+You can define scripts to be ignored in each step. The pre-backup, post-backup and post fail-backup -steps. Scripts must be defined as an array. This is seperated by a space and inclosed in "( )" as already provided. It also should be the full path to the script. An example:
+
+    # Define scripts to be ignored
+    PRE_BACKUP_IGNORE=('/etc/cloudvps-boss/pre-backup.d/15-mysql-backup.sh'
+                       '/etc/cloudvps-boss/pre-backup.d/15-postgresql-backup.sh')
+    POST_BACKUP_IGNORE=()
+    POST_FAIL_BACKUP_IGNORE=()
+
+This is especially useful when you place your own custom scripts per default and want to manage what you actually use in this configuration script. The same goes for servers that do not require that type of backup, even though (for example) mysql is installed.
+    
 
 The auth.conf file has the credentials needed for Swift and Openstack authentication:
 
