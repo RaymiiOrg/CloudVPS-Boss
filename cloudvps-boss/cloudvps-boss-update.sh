@@ -70,8 +70,6 @@ if [[ -f "/etc/cloudvps-boss/pre-backup.d/15-postgresql_backup.sh" ]]; then
     rm -f /etc/cloudvps-boss/pre-backup.d/15-postgresql_backup.sh
 fi
 
-
-
 lecho "Downloading CloudVPS Boss from ${DL_SRV}cloudvps-boss_latest.tar.gz"
 get_file "/root/.cloudvps-boss/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"
 if [[ $? -ne 0 ]]; then
