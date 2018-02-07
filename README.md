@@ -292,7 +292,6 @@ You can define scripts to be ignored in each step. The pre-backup, post-backup a
     POST_FAIL_BACKUP_IGNORE=()
 
 This is especially useful when you place your own custom scripts per default and want to manage what you actually use in this configuration script. The same goes for servers that do not require that type of backup, even though (for example) mysql is installed.
-    
 
 The auth.conf file has the credentials needed for Swift and Openstack authentication:
 
