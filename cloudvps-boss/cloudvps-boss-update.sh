@@ -56,9 +56,21 @@ if [[ -d "/root/.cloudvps-boss/cloudvps-boss" ]]; then
 fi
 
 if [[ -f "/etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh" ]]; then
-    lecho "Removing the old lockfile-check file at /etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh - Cleanup, typo."
-    rm -rf /root/.cloudvps-boss/cloudvps-boss.tar.gz
+    lecho "Removing the old lockfile-check script at /etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh - Cleanup for consistency."
+    rm -f /etc/cloudvps-boss/pre-backup.d/11_lockfile_check.sh
 fi
+
+if [[ -f "/etc/cloudvps-boss/pre-backup.d/15-mysql_backup.sh" ]]; then
+    lecho "Removing the old 15-mysql_backup script at /etc/cloudvps-boss/pre-backup.d/15-mysql_backup.sh - Cleanup for consistency."
+    rm -f /etc/cloudvps-boss/pre-backup.d/15-mysql_backup.sh
+fi
+
+if [[ -f "/etc/cloudvps-boss/pre-backup.d/15-postgresql_backup.sh" ]]; then
+    lecho "Removing the old 15-mysql_backup script at /etc/cloudvps-boss/pre-backup.d/15-postgresql_backup - Cleanup for consistency."
+    rm -f /etc/cloudvps-boss/pre-backup.d/15-postgresql_backup.sh
+fi
+
+
 
 lecho "Downloading CloudVPS Boss from ${DL_SRV}cloudvps-boss_latest.tar.gz"
 get_file "/root/.cloudvps-boss/cloudvps-boss.tar.gz" "${DL_SRV}cloudvps-boss_latest.tar.gz"

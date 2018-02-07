@@ -222,8 +222,8 @@ If you are on a unsupported distribution you need to to the following things to 
         |   `-- 20-failure-notify.sh
         |-- pre-backup.d
         |   |-- 10-upload-starting-status.sh
-        |   |-- 15-mysql_backup.sh
-        |   `-- 15-postgresql_backup.sh
+        |   |-- 15-mysql-backup.sh
+        |   `-- 15-postgresql-backup.sh
         `-- uninstall.sh
 
 

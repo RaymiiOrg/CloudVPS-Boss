@@ -278,7 +278,7 @@ for COPY_FILE in "cloudvps-boss.cron" "backup.conf" "cloudvps-boss-encryption-se
     fi
 done
 
-for COPY_FILE in "10-upload-starting-status.sh" "11-lockfile-check.sh" "15-mysql_backup.sh" "15-postgresql_backup.sh"; do
+for COPY_FILE in "10-upload-starting-status.sh" "11-lockfile-check.sh" "15-mysql-backup.sh" "15-postgresql-backup.sh"; do
     cp "cloudvps-boss/pre-backup.d/${COPY_FILE}" "/etc/cloudvps-boss/pre-backup.d/${COPY_FILE}"
     if [[ "$?" -ne 0 ]]; then
         lerror "Cannot copy cloudvps-boss/${COPY_FILE} to /etc/cloudvps-boss/pre-backup.d/${COPY_FILE}."
@@ -363,7 +363,7 @@ for COMMAND in "cloudvps-boss.sh" "cloudvps-boss-restore.sh" "cloudvps-boss-stat
     ln -fs "/etc/cloudvps-boss/${COMMAND}" "/usr/local/bin/${COMMAND%.sh}"
 done
 
-for FILE in "pre-backup.d/15-mysql_backup.sh" "pre-backup.d/15-postgresql_backup.sh" "post-backup.d/10-upload-completed-status.sh" "pre-backup.d/10-upload-starting-status.sh" "pre-backup.d/11-lockfile-check.sh" "post-fail-backup.d/10-upload-fail-status.sh" "post-fail-backup.d/20-failure-notify.sh"; do
+for FILE in "pre-backup.d/15-mysql-backup.sh" "pre-backup.d/15-postgresql-backup.sh" "post-backup.d/10-upload-completed-status.sh" "pre-backup.d/10-upload-starting-status.sh" "pre-backup.d/11-lockfile-check.sh" "post-fail-backup.d/10-upload-fail-status.sh" "post-fail-backup.d/20-failure-notify.sh"; do
     # make sure all files are executable
     chmod +x "/etc/cloudvps-boss/${FILE}"
 done
