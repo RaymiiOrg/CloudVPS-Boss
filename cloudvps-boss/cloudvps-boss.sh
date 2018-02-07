@@ -40,6 +40,8 @@ for SCRIPT in /etc/cloudvps-boss/pre-backup.d/*; do
                 if [[ $? -ne 0 ]]; then
                     lerror "Pre backup script ${SCRIPT} failed."
                 fi
+            else
+                lecho "Ignoring ${SCRIPT} as per defined in backup.conf"
             fi
         fi
     fi
@@ -81,6 +83,8 @@ if [[ $? -ne 0 ]]; then
             if [[ -x "${SCRIPT}" ]]; then
                 if [[ ! " ${POST_FAIL_BACKUP_IGNORE[@]} " =~ " ${SCRIPT} " ]]; then
                     "${SCRIPT}" || lerror "Post fail backup script ${SCRIPT} failed."
+                else
+                    lecho "Ignoring ${SCRIPT} as per defined in backup.conf"
                 fi
             fi
         fi
@@ -128,6 +132,8 @@ for SCRIPT in /etc/cloudvps-boss/post-backup.d/*; do
         if [[ -x "${SCRIPT}" ]]; then
             if [[ ! " ${POST_BACKUP_IGNORE[@]} " =~ " ${SCRIPT} " ]]; then
                 "${SCRIPT}" || lerror "Post backup script ${SCRIPT} failed."
+            else
+                lecho "Ignoring ${SCRIPT} as per defined in backup.conf"
             fi
         fi
     fi
