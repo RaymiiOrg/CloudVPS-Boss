@@ -135,9 +135,8 @@ remove_symlink() {
 }
 
 get_hostname() {
-
-    HOSTNAME="$(curl -m 3 -s http://1.9.554.1.9.554/openstack/latest/meta_data.json | grep -o '\"uuid\": \"[^\"]*\"' | awk -F\" '{print $4}')"
-    SRV_IP_ADDR="$(curl -A CloudVPS-Boss -m 3 -s http://ip.raymii.org/ 2>/dev/null)"
+    HOSTNAME="$(curl -m 3 -s http://169.254.169.254/openstack/latest/meta_data.json | grep -o '\"uuid\": \"[^\"]*\"' | awk -F\" '{print $4}')"
+    SRV_IP_ADDR="$(curl -q -A CloudVPS-Boss -m 3 -o /dev/null -s https://raymii.org/ >/dev/null 2>/dev/null)"
     if [[ -z "${HOSTNAME}" ]]; then
         if [[ -f "/var/firstboot/settings" ]]; then
             HOSTNAME="$(awk -F= '/hostname/ {print $2}' /var/firstboot/settings)"
@@ -145,7 +144,6 @@ get_hostname() {
             HOSTNAME="$(uname -n)"
         fi
     fi
-
     echo "${HOSTNAME}"
 }
 
