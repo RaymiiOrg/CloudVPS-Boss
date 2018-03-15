@@ -163,9 +163,9 @@ fi
 
 lecho "Username: ${SWIFT_USERNAME}"
 lecho "Auth URL: ${SWIFT_AUTHURL}"
-lecho "Checking Swift Container for Backups: https://${TENANT_ID}.objectstore.eu/cloudvps-boss-backup/"
+lecho "Checking Swift Container for Backups: https://public.objectstore.eu/v1/${TENANT_ID}/cloudvps-boss-backup/"
 
-curl -s -o /dev/null -X PUT -T "/etc/hosts" --user "${USERNAME}:${PASSWORD}" "https://${TENANT_ID}.objectstore.eu/cloudvps-boss-backup/"
+curl -s -o /dev/null -X PUT -T "/etc/hosts" --user "${USERNAME}:${PASSWORD}" "https://public.objectstore.eu/v1/${TENANT_ID}/cloudvps-boss-backup/"
 if [[ $? == 60 ]]; then
     # CentOS 5...
     lecho "Curl error Peer certificate cannot be authenticated with known CA certificates."

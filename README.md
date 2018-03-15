@@ -2,9 +2,9 @@
 
 ### Introduction
 
-CloudVPS Boss is a backup suite for Linux that utilises Duplicity to backup and restore files, folders and databases from and to Openstack Swift with optional encryption, in our case the CloudVPS Object Store. 
+CloudVPS Boss is a backup suite for Linux that utilises Duplicity to backup and restore files, folders and databases from and to Openstack Swift with optional encryption, in our case the CloudVPS Object Store.
 
-Backing up to this medium means that your data is stored three times over two different datacenters for a very low price. The name means “CloudVPS Backup to Object Store Script” and was chosen by our marketing team (but the development team obviously loves it). 
+Backing up to this medium means that your data is stored three times over two different datacenters for a very low price. The name means “CloudVPS Backup to Object Store Script” and was chosen by our marketing team (but the development team obviously loves it).
 
 The code is open source so you can use it on non CloudVPS object stores in the unlikely case that you would want to do that.
 
@@ -88,7 +88,7 @@ The following distributions are NOT supported. That means, if something breaks, 
 
 ### Installation
 
-#### Object Store user 
+#### Object Store user
 
 Make sure you have an Openstack or Object Store project. If not, please contact sales or order one via the website.
 
@@ -106,7 +106,7 @@ Please do not use your main account, but create a new user under your projects:
 
 ![](http://i.imgur.com/rxVnCd6.png)
 
-- Add the user to your openstack project. Click the "+" and select the correct project. Give it only "swiftoperator" permissions. 
+- Add the user to your openstack project. Click the "+" and select the correct project. Give it only "swiftoperator" permissions.
 .
 
 - Note down the Project ID. This is the same as the Tenant ID.
@@ -117,11 +117,11 @@ The object store account can already contain data. The backups are written to th
 
 #### Installation
 
-You need to run the installer as the `root` user, or as a user with an `EUID` equal to 0. All the cloudvps-boss tools will check if they are executed as root and will fail otherwise. 
+You need to run the installer as the `root` user, or as a user with an `EUID` equal to 0. All the cloudvps-boss tools will check if they are executed as root and will fail otherwise.
 
 Download the .tar.gz file containing the latest version of the script:
 
-    wget -O cloudvps-boss-latest.tar.gz https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn/cloudvps-boss_latest.tar.gz
+    wget -O cloudvps-boss-latest.tar.gz https://download.cloudvps.com/cloudvps-boss/cloudvps-boss_latest.tar.gz
 
 Extract it:
 
@@ -139,15 +139,15 @@ If you want to start the installation unattended, give the username and password
 
 A one liner, if you need to do multiple installations:
 
-    rm -rf /tmp/cloudvps*; wget -O /tmp/cloudvps-boss_latest.tar.gz https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn/cloudvps-boss_latest.tar.gz && cd /tmp && tar -xf cloudvps-boss_latest.tar.gz && cd /tmp/cloudvps-boss && bash install.sh
+    rm -rf /tmp/cloudvps*; wget -O /tmp/cloudvps-boss_latest.tar.gz https://download.cloudvps.com/cloudvps-boss/cloudvps-boss_latest.tar.gz && cd /tmp && tar -xf cloudvps-boss_latest.tar.gz && cd /tmp/cloudvps-boss && bash install.sh
 
-The installer will ask you for your Openstack Username, Password and Tenant ID. Your pasword will not be shown when you type it, you will also not see stars or some other masking. 
+The installer will ask you for your Openstack Username, Password and Tenant ID. Your pasword will not be shown when you type it, you will also not see stars or some other masking.
 
-A version of Duplicity with support for OpenStack Swift will be installed, as well as the required build tools, and the necessary openstack clients. 
+A version of Duplicity with support for OpenStack Swift will be installed, as well as the required build tools, and the necessary openstack clients.
 
 If the csf or lfd firewall applications are detected, IP ranges related to the CloudVPS Object Store will be configured as exception rules.
 
-After that it will create or update the container `cloudvps-boss-backup`. It will also place the required config files and such. 
+After that it will create or update the container `cloudvps-boss-backup`. It will also place the required config files and such.
 
 Example install output:
 
@@ -166,13 +166,13 @@ Example install output:
     # CloudVPS Boss Credentials Config 1.6 started on Sun Aug 24 08:56:14 CEST 2014.
 
     Openstack Username (user@example.org): user@example.org
-    Openstack Password (not shown): 
+    Openstack Password (not shown):
     Openstack Tenant ID : 22[...]8a
 
     # Username: Example Tenant:user@example.org
     # Auth URL: https://identity.stack.cloudvps.com/v2.0
     # Written auth config to /etc/cloudvps-boss/auth.conf.
-    # Checking Swift Container for Backups: https://22[...]8a.objectstore.eu/cloudvps-boss-backup/
+    # Checking Swift Container for Backups: https://public.objectstore.eu/v1/22[...]8a/cloudvps-boss-backup/
     # credentials.sh completed.
     # Randomized cronjob time, will run on 4:36.
     # Creating symlink for backup script in /usr/local/bin/cloudvps-boss.
@@ -236,7 +236,7 @@ If you are on a unsupported distribution you need to to the following things to 
 
 #### Notes on CentOS
 
-On CentOS 5 we also compile and install a newer version of sqlite, setuptools and Python version 2.7. We don't touch the system Python 2.4, so Yum still works. 
+On CentOS 5 we also compile and install a newer version of sqlite, setuptools and Python version 2.7. We don't touch the system Python 2.4, so Yum still works.
 
 Another step we take on this distro, if needed, is updating the system root CA certicicates file, making a safety copy of the original. This is necessary for the swift client, to allow it to verify the CloudVPS SSL credentials correctly.
 
@@ -269,9 +269,9 @@ This gives you 3 months of retention. The settings can be found in `/etc/cloudvp
     # Only change this if your tmp folder is to small. See README
     TEMPDIR="/tmp"
 
-If you want more or less retention, change the variables. For one week of retention, create a full backup if the other full is older than 7 days and keep at max 1 full backup. If you want a month of retention, create a full backup if the other full is older than 7 days and keep at max 4 full backups. 
+If you want more or less retention, change the variables. For one week of retention, create a full backup if the other full is older than 7 days and keep at max 1 full backup. If you want a month of retention, create a full backup if the other full is older than 7 days and keep at max 4 full backups.
 
-You can increase the amount of days before a full backup is created. Duplicity will create more incremental backups then. 
+You can increase the amount of days before a full backup is created. Duplicity will create more incremental backups then.
 
 Note that full backups have a positive effect on restore speeds, but a negative effect on the amount of storage needed. Increase the relative number of full backups for better speed, or lower it for less storage.
 
@@ -301,7 +301,7 @@ If you want to use a custom backend or extra Duplicity options you can configure
 
     /etc/cloudvps-boss/custom.conf
 
-This file is not there by default, you should create it. 
+This file is not there by default, you should create it.
 
 The following options are supported:
 
@@ -315,7 +315,7 @@ You can specify a custom backend here, this will be used instead of our Object S
 
     BACKUP_BACKEND='ftp://backup@example.com:Passw0rd@example.com'
 
-For FTP you need to install `ncftp`. 
+For FTP you need to install `ncftp`.
 
 To use an SSH/SFTP server with a custom SSH key:
 
@@ -324,7 +324,7 @@ To use an SSH/SFTP server with a custom SSH key:
 
 For SFTP/SSH you need to install `paramiko`.
 
-Please read the [Duplicity man page](duplicity.nongnu.org/duplicity.1.html) to see which backends and custom options are supported. 
+Please read the [Duplicity man page](duplicity.nongnu.org/duplicity.1.html) to see which backends and custom options are supported.
 
 Do note that we do not support custom configuration and / or custom backends.
 
@@ -356,7 +356,7 @@ To the following:
     # CloudVPS Boss Backup
     52 6 * * * root /usr/bin/trickle -s -u 250 /usr/local/bin/cloudvps-boss
 
-The `-u 250` is the max upload speed in KB/s. The above command line will effectifly limit CloudVPS Boss to max 250KB/s upload (2 Mbit/s). 
+The `-u 250` is the max upload speed in KB/s. The above command line will effectifly limit CloudVPS Boss to max 250KB/s upload (2 Mbit/s).
 
 Change the cronjob file to be immutable. Otherwise the change will be overwritten next update:
 
@@ -375,7 +375,7 @@ Do note that the cron file will be overwritten during the update once a month. I
 
     chattr +i /etc/cron.d/cloudvps-boss
 
-Before editing it, remove the immutable flag using the same command, just with `-i` instead of `+i`. 
+Before editing it, remove the immutable flag using the same command, just with `-i` instead of `+i`.
 
 You can also just copy the cronjob file to another file in `/etc/cron.d`.
 
@@ -451,7 +451,7 @@ CloudVPS Boss detects if there is a MySQL/MariaDB or a PostgreSQL server running
     - OpenPanel
     - cPanel/WHM
     - Debian sys-maint user
-    
+
 If you run a bare CentOS/Fedora install and want to have automated MySQL/MariaDB backups you should edit the file `/root/.my.cnf` with the correct username and password (with all privileges):
 
     [client]
@@ -460,7 +460,7 @@ If you run a bare CentOS/Fedora install and want to have automated MySQL/MariaDB
 
 Make sure you do not remove the `/root/.my.cnf` file. This file is what gives CloudVPS Boss access to the database. If you change the root password, also change it here.
 
-For Postgres it detects if there is a `postgres` system user and that peer authentication is allowed for the domain socket and localhost. If so, it will use that to dump all databases (one by one using `pg_dump`). It also dumps the global database with the roles and such using `pg_dumpall -g`. If you have a special PostgreSQL setup which does not use peer authentication or the `postgres` system user you should manually update the script placed in `/etc/cloudvps-boss/pre-backup.d/`. 
+For Postgres it detects if there is a `postgres` system user and that peer authentication is allowed for the domain socket and localhost. If so, it will use that to dump all databases (one by one using `pg_dump`). It also dumps the global database with the roles and such using `pg_dumpall -g`. If you have a special PostgreSQL setup which does not use peer authentication or the `postgres` system user you should manually update the script placed in `/etc/cloudvps-boss/pre-backup.d/`.
 
 
 ##### Disabling database backups
@@ -473,9 +473,9 @@ If you want to disable database dumps, remove the mysql and postgresql scripts i
 
 Introduced in version 1.6 is a simple backup progress reporting tool. Duplicity does not natively support reporting progress, the option that is in there does not work. By using a combination of verbose logging and some math we can get the backup progress.
 
-The command works best for a long running full backup. 
+The command works best for a long running full backup.
 
-The command is: `cloudvps-boss-progress`. 
+The command is: `cloudvps-boss-progress`.
 Example output:
 
     # Diskspace used: 1580589 MiB / 1543 GiB
@@ -489,7 +489,7 @@ Example output:
     # 2.66% done, 1502 GiB left to upload of 1543 GiB.
     [##________________________________________________]
 
-Do note that the reported data is an estimate, reality may differ. 
+Do note that the reported data is an estimate, reality may differ.
 
 Duplicity needs to finish at least one volume, otherwise the progress report fails:
 
@@ -541,13 +541,13 @@ If you want to restore a database to another database you need to do that manual
 
 ![](http://i.imgur.com/ItK20EP.png)
 
-Provide the time/date from when you want to restore a backup.  This can be a relative date like 3D (for three days ago) or 2W (for two weeks ago) 
+Provide the time/date from when you want to restore a backup.  This can be a relative date like 3D (for three days ago) or 2W (for two weeks ago)
 
 You can use the `cloudvps-boss-stats` command to see which backup sets, dates and times are available. See below for more info on `cloudvps-boss-stats`.
 
-`(s=seconds, m=minutes, h=hours, D=days, M=months, W=weeks, Y=years).` 
+`(s=seconds, m=minutes, h=hours, D=days, M=months, W=weeks, Y=years).`
 
-Also accepted are w3 datetime strings like '2014-06-25T07:00:00+02:00' which means 25'th of June, 2014, 07:00 +2 UTC. YYYY/MM/DD, YYYY-MM-DD, MM/DD/YYYY, or MM-DD-YYYY are also accepted as day formats. 
+Also accepted are w3 datetime strings like '2014-06-25T07:00:00+02:00' which means 25'th of June, 2014, 07:00 +2 UTC. YYYY/MM/DD, YYYY-MM-DD, MM/DD/YYYY, or MM-DD-YYYY are also accepted as day formats.
 
 Please read the Duplicity Man page, section Time Formats for more info.
 
@@ -567,7 +567,7 @@ Import this file in the GPG keyring, as root:
 
     gpg --import-key encryption.key
 
-Now you can use the normal `cloudvps-boss-restore` command. 
+Now you can use the normal `cloudvps-boss-restore` command.
 
 If you are asked for a GPG passphrase, just press return since there is no passphrase on the key.
 
@@ -585,7 +585,7 @@ Then you have not placed the (correct) private encryption key back.
 
 Don't forget to remove the key when you are done restoring a file. Get the GPG key ID for the `Encryption` key:
 
-    gpg --list-secret-keys 
+    gpg --list-secret-keys
 
 Output:
 
@@ -616,7 +616,7 @@ Output:
 
 Press `y` and return twice to confirm the deletion.
 
-You need to delete the encryption private key because only the public encryption key is required to create a backup. The public key is used to encrypt data, the private key is used to decrypt data. 
+You need to delete the encryption private key because only the public encryption key is required to create a backup. The public key is used to encrypt data, the private key is used to decrypt data.
 
 If the encryption config or the keys are not available (you are restoring on another machine) you will need to follow the instructions in section "Restore keys and encryption config". When that is restored, you can follow the normal procedure for restoring a backup.
 
@@ -656,11 +656,11 @@ To recover data from another host (for example, after a reinstall or crash) you 
 
 #### Errors during recovery
 
-You might receive errors during recovery. Most of the time this means you provided a wrong parameter: 
+You might receive errors during recovery. Most of the time this means you provided a wrong parameter:
 
-- The file/database might not be available in the backup. 
+- The file/database might not be available in the backup.
 - The file/database might not be available in the given timeframe. (30M instead of 30m (months over minutes))
-- The database server might not be accessible. 
+- The database server might not be accessible.
 - The file/folder/partition might not be writable.
 - The local disk might be full or does not have enough free space.
 
@@ -678,7 +678,7 @@ If you get an error like this:
     If you are sure that this is the  only instance running you may delete
     the following lockfile and run the command again :
         /root/.cache/duplicity/0f8c1d052364ab963f59e5e6b3539b40/lockfile.lock
-        
+
 Use the command `ps auxf` to check if there is still an instance running and if you are sure you are not running it in a screen session or something else, kill it with `pkill duplicity`.
 
 If you try to restore manually (`duplicity --no-encryption list-current-files swift://cloudvps-boss-backup
@@ -713,12 +713,12 @@ Note the DOT at the end of the prefix. If you are restoring on the same machine 
 You also need to specify the relative path to the backup path. In the standard configuration the backup path is "`/`". Therefore, if we want to restore the folder `/etc/apache2/sites-enabled/` we should use the following command to restore it in the `/root/restore` folder:
 
     duplicity --file-prefix="$(uname -n)." --name="$(uname -n)." --no-encryption -t 3D --file-to-restore etc/apache2/sites-enabled swift://cloudvps-boss-backup ./restore
-    
+
 Result:
-    
+
     Local and Remote metadata are synchronized, no sync needed.
     Last full backup date: Sun Jun 29 19:39:26 2014
-    
+
 If we don't specify either the hostname prefix with the dot or the relative path we get the following error:
 
     duplicity --file-prefix="$(uname -n)." --no-encryption -t 3D --file-to-restore /etc/apache2/sites-enabled swift://cloudvps-boss-backup ./restore
@@ -740,7 +740,7 @@ MySQL users are also backed up, because the database `mysql` is backed up. This,
 
 ##### PostgreSQL
 
-The PostgreSQL database dumps are restored to the local postgresql server, using the `postgres` user. Make sure `peer` authentication is allowed. Roles and other data is backed up as well, using the `pg_dumpall -g` command. These are not restored automatically. You can do this yourself, or create a new role. To restore the role/global settings, you must use the `pg_restore` command, you cannot just restore the SQL dumped. 
+The PostgreSQL database dumps are restored to the local postgresql server, using the `postgres` user. Make sure `peer` authentication is allowed. Roles and other data is backed up as well, using the `pg_dumpall -g` command. These are not restored automatically. You can do this yourself, or create a new role. To restore the role/global settings, you must use the `pg_restore` command, you cannot just restore the SQL dumped.
 
 To restore the users/roles, start the restore script and restore the file "/var/backups/sql/pg_global_data.psql.gz". Then manually import this dump with the `pg_restore` command.
 
@@ -813,7 +813,7 @@ You can execute the following command:
 
     cloudvps-boss-list-current-files
 
-It will use the duplicity option `list-current-files` to show all the files in the latest backup. 
+It will use the duplicity option `list-current-files` to show all the files in the latest backup.
 
 Example output:
 
@@ -843,7 +843,7 @@ If that gives no output, it is not in the backup. Try another timeframe.
 
 ### How can I manually clean up / remove backups?
 
-To remove backups outside of Duplicity we can use the `swift` command line to select the correct files and remove them. 
+To remove backups outside of Duplicity we can use the `swift` command line to select the correct files and remove them.
 
 *Do note, this will break your backups. Only use this if you have a corrupt backup, be carefull.*
 
@@ -909,8 +909,8 @@ You can also write a simple script which talks to a web service or MQTT broker a
 
 You can use the uninstall script to remove all of CloudVPS Boss. It does not touch your backups, it only removes CloudVPS Boss and related scripts/config. Run it like so:
 
-    bash /etc/cloudvps-boss/uninstall.sh 
-    
+    bash /etc/cloudvps-boss/uninstall.sh
+
 Example output:
 
     Would you like to completely remove CloudVPS Boss? Your backups will NOT be removed. [y/N]? y
@@ -930,11 +930,11 @@ Before version 1.4 CloudVPS Boss did not support encryption. To use Duplicity's 
 
 CloudVPS Boss support Duplicity's encryption features. It has a command that can be used to enable encryption. It will generate 2 GPG keys and place an extra config file.
 
-When using encryption it is **important** that you back up your keys, test if they work and repeat this on a regular basis. 
+When using encryption it is **important** that you back up your keys, test if they work and repeat this on a regular basis.
 
 **If you do not backup your keys or loose them and the backups of your keys, all your backups are unaccessible!** CloudVPS is not able to access or recover your backups if you have lost the keys.
 
-If you understand what this means then please read on. If you don't, read up on encryption and gpg or ask someone else for help. 
+If you understand what this means then please read on. If you don't, read up on encryption and gpg or ask someone else for help.
 
 <a id="encwhy"></a>
 
@@ -966,9 +966,9 @@ On CentOS/RHEL/Fedora:
 
     yum install gnupg2
 
-CloudVPS Boss provides an easy setup of all the required keys and config. After running that all the CloudVPS Boss tools will use encryption, transparantly. 
+CloudVPS Boss provides an easy setup of all the required keys and config. After running that all the CloudVPS Boss tools will use encryption, transparantly.
 
-The program also prints out all the information you need for restoring the keys. You need to back that up to a different place. 
+The program also prints out all the information you need for restoring the keys. You need to back that up to a different place.
 
 If you do not back this data up and the keys are lost, you will not be able to decrypt your backed up data.
 
@@ -980,10 +980,10 @@ You are then given some information and asked to confirm that you will backup th
 
     You are going to set up encryption for your backups.
     You need to have a good key backup, testing and recovery
-    procedure. A lot of information will be shown on the 
+    procedure. A lot of information will be shown on the
     screen when the setup is done. Make sure to back that up.
 
-    Please type 'I have a good key management procedure and want to set up encryption.': 
+    Please type 'I have a good key management procedure and want to set up encryption.':
 
 Key generation can take a long time because of the lack of randomness on a virtual machine. The [haveged](http://www.issihosts.com/haveged/) daemon is an easy-to-use, unpredictable random number generator based upon an adaptation of the [HAVEGE](http://www.irisa.fr/caps/projects/hipsor/) algorithm. If you want to speed up the key generation, install `haveged` with your package manager. For Ubuntu/Debian:
 
@@ -1004,7 +1004,7 @@ It will then pause and say the following:
 
     Please save the following information. Press ENTER to continue.
 
-After you press enter you will receive all the information you need to restore the data. This includes the GPG keys, and the backup config. Print that out, back that up elsewhere, manage it. That data are the keys to the kingdom. 
+After you press enter you will receive all the information you need to restore the data. This includes the GPG keys, and the backup config. Print that out, back that up elsewhere, manage it. That data are the keys to the kingdom.
 
 It looks like this:
 
@@ -1085,13 +1085,13 @@ It looks like this:
 
 We cannot stress enough how important it is you back this data up. Please, please do so.
 
-Do not share this with anyone. If you give out the above information people will be able to access your backups. 
+Do not share this with anyone. If you give out the above information people will be able to access your backups.
 
 The encryption is now setup. Please make a backup. You can see the difference between non-encrypted backups and encrypted backups by 2 ways. The first is the command which is printed before the backup. Non-encrypted backups look like this:
 
     # ionice -c2 nice -n19 duplicity --asynchronous-upload --volsize 25 --tempdir="" --file-prefix="HOSTNAME." --exclude-device-files --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf --full-if-older-than="14D" --no-encryption  / swift://cloudvps-boss-backup
 
-Encrypted backups do not have the `--no-encryption` option but specify which keys are used to sign and encrypt (`--encrypt-key=64DDBC7D --sign-key=68BD06B3`): 
+Encrypted backups do not have the `--no-encryption` option but specify which keys are used to sign and encrypt (`--encrypt-key=64DDBC7D --sign-key=68BD06B3`):
 
     # ionice -c2 nice -n19 duplicity --asynchronous-upload --volsize 25 --tempdir="" --file-prefix="hostname." --exclude-device-files --exclude-globbing-filelist=/etc/cloudvps-boss/exclude.conf --full-if-older-than="14D" --encrypt-key=64DDBC7D --sign-key=68BD06B3  / swift://cloudvps-boss-backup
 
@@ -1128,7 +1128,7 @@ If the encryption config or the keys are not available you will need to follow t
 
 It is important to test the backups of every machine when they are encrypted. Please test the encrypted backups, on a new machine, every month. This includes restoring the keying material.
 
-When the encryption was set up, you backed up the important information containing the keys. Find it for this host. 
+When the encryption was set up, you backed up the important information containing the keys. Find it for this host.
 
 Make sure GPG and haveged are installed. On debian/ubuntu:
 
@@ -1168,13 +1168,13 @@ Place the encryption key in a file named `encryption.key`. In your backed up dat
     =spVj
     -----END PGP PRIVATE KEY BLOCK-----
 
-You need the part between `-----BEGIN PGP PRIVATE KEY BLOCK-----` and `-----END PGP PRIVATE KEY BLOCK-----`. 
+You need the part between `-----BEGIN PGP PRIVATE KEY BLOCK-----` and `-----END PGP PRIVATE KEY BLOCK-----`.
 
 Repeat this for the signing key. Place it in a file named `sign.key`.
 
 Import these keys into the GPG database using the following command:
 
-    gpg --import sign.key 
+    gpg --import sign.key
 
 The output looks like this:
 
@@ -1211,7 +1211,7 @@ Now we need to mark the keys as trusted. If you have backed up the Owner Trust y
 
 You can also do it manually. Execute the following command, replacing the key ID with your key ID:
 
-    gpg --edit-key 8C12A683 trust 
+    gpg --edit-key 8C12A683 trust
 
 Example output:
 
@@ -1223,12 +1223,12 @@ Example output:
 
     pub  4096R/8C12A683  created: 2014-08-23  expires: never       usage: SCEA
                          trust: unknown       validity: unknown
-    sub  2048g/C99A7CDB  created: 2014-08-23  expires: never       usage: E   
+    sub  2048g/C99A7CDB  created: 2014-08-23  expires: never       usage: E
     [ unknown] (1). CloudVPS Boss Backup Signing Key for hostname <backup-signing@hostname>
 
     pub  4096R/8C12A683  created: 2014-08-23  expires: never       usage: SCEA
                          trust: unknown       validity: unknown
-    sub  2048g/C99A7CDB  created: 2014-08-23  expires: never       usage: E   
+    sub  2048g/C99A7CDB  created: 2014-08-23  expires: never       usage: E
     [ unknown] (1). CloudVPS Boss Backup Signing Key for hostname <backup-signing@hostname>
 
     Please decide how far you trust this user to correctly verify other users' keys
@@ -1242,16 +1242,16 @@ Example output:
       m = back to the main menu
 
 We have to type `5` here:
-    
+
     Your decision? 5
 
 Then type `y`:
-    
+
     Do you really want to set this key to ultimate trust? (y/N) y
 
     pub  4096R/8C12A683  created: 2014-08-23  expires: never       usage: SCEA
                          trust: ultimate      validity: unknown
-    sub  2048g/C99A7CDB  created: 2014-08-23  expires: never       usage: E   
+    sub  2048g/C99A7CDB  created: 2014-08-23  expires: never       usage: E
     [ unknown] (1). CloudVPS Boss Backup Signing Key for hostname <backup-signing@hostname>
     Please note that the shown key validity is not necessarily correct
     unless you restart the program.
@@ -1287,7 +1287,7 @@ You will need to edit `/etc/cloudvps-boss/auth.conf` and place your new password
     Unauthorised. Check username, password and tenant name/id
     cloudvps-boss: ERROR - Could not upload status
     Connection failed: ClientException Unauthorised. Check username, password and tenant name/id
-    Error trying to create container 'cloudvps-boss-backup': 0 
+    Error trying to create container 'cloudvps-boss-backup': 0
 
 <a id="dow"></a>
 
@@ -1309,7 +1309,7 @@ The running backup will continue. The new backup will give an error like this:
     CloudVPS Boss to Object Store FAILED!. Please check server example.org.
     Running post-fail-backup scripts from /etc/cloudvps-boss/post-fail-backup.d/
 
-If you've configured email support you will receive an email with the error messages. 
+If you've configured email support you will receive an email with the error messages.
 
 If this happens multiple times you need to check if the backup is still running. If there is no rsync or Duplicity process, remove the lockfile and manually try again.
 
@@ -1372,9 +1372,9 @@ If you have more than 500 GB to backup, or have large files changing fast you ne
 
     VOLUME_SIZE="250"
 
-Where 250 is the size in megabytes. 
+Where 250 is the size in megabytes.
 
-3. Change the `--max-blocksize` option.  
+3. Change the `--max-blocksize` option.
 
     max_blocksize determines the size of the block examined for changes during the diff process.  For files < 1MB the blocksize is a constant of 512.  For files over 1MB the size is given by:
 
@@ -1406,23 +1406,23 @@ If the restore script looks weird like above and you are running in a `screen` s
 
 ### License
 
-    CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift, Object 
-    Store. Copyright (C) 2014 CloudVPS. 
+    CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift, Object
+    Store. Copyright (C) 2014 CloudVPS.
     Author: Remy van Elst, https://raymii.org
 
 
-    This program is free software; you can redistribute it and/or modify it 
-    under the terms of the GNU General Public License as published by the 
-    Free Software Foundation; either version 2 of the License, or (at your 
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation; either version 2 of the License, or (at your
     option) any later version.
 
-    This program is distributed in the hope that it will be useful, but 
-    WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
     General Public License for more details.
 
-    You should have received a copy of the GNU General Public License along 
-    with this program; if not, write to the Free Software Foundation, Inc., 
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 Also see LICENSE.md for full text of GPLv2.
