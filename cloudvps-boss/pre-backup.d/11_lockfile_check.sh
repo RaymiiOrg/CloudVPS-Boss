@@ -1,24 +1,24 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2018 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
-# 
-# This program is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2 of the License, or (at your 
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
-# with this program; if not, write to the Free Software Foundation, Inc., 
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-# 
+#
 
-VERSION="1.9.12"
+VERSION="1.9.17"
 TITLE="CloudVPS Boss Lockfile Check ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -38,12 +38,12 @@ greater_than_24hour_mail() {
 
 Dear user,
 
-This is a message to inform you that your backup to the CloudVPS 
+This is a message to inform you that your backup to the CloudVPS
 Object Store has not succeeded on date: $(date) (server date/time).
 
 This is because the backup lockfile still exists.
 
-The backupscript has noticed that the last initiated job was still running after 24 hours. This is unusual behaviour and could lead to hanging backup processes. 
+The backupscript has noticed that the last initiated job was still running after 24 hours. This is unusual behaviour and could lead to hanging backup processes.
 
 Should this process hang for 24 hours as well, you will receive this message again, then CloudVPS Boss needs investigation to see what is causing the issues. Please contact support@cloudvps.com and forward this email.
 
@@ -76,7 +76,7 @@ less_than_24hour_mail() {
 
 Dear user,
 
-This is a message to inform you that your backup to the CloudVPS 
+This is a message to inform you that your backup to the CloudVPS
 Object Store has not succeeded on date: $(date) (server date/time).
 
 This is because the backup lockfile still exists.

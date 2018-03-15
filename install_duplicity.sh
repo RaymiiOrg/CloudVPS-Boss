@@ -1,29 +1,29 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2018 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
-# 
-# This program is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2 of the License, or (at your 
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
-# with this program; if not, write to the Free Software Foundation, Inc., 
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
 set -o pipefail
 
-VERSION="1.9.12"
-DUPLICITY_VERSION="0.7.14"
+VERSION="1.9.17"
+DUPLICITY_VERSION="0.7.17"
 TITLE="CloudVPS Boss Duplicity Installer ${VERSION}"
-DL_SRV="https://2162bb74000a471eb2839a7f1648771a.objectstore.eu/duplicity-cdn" # no ending slash (/)
+DL_SRV="https://download.cloudvps.com/cloudvps-boss" # no ending slash (/)
 
 if [[ ${DEBUG} == "1" ]]; then
     set -x
@@ -114,22 +114,22 @@ distro_version() {
 }
 
 install_duplicity_debian_7() {
-    
-    APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)" 
+
+    APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'apt-get update' failed." 
+        lerror "'apt-get update' failed."
         exit 1
     fi
-    
+
     APT_INSTALL="$(apt-get -qq -y --force-yes install util-linux wget dialog libc6 python build-essential libxslt1-dev libxml2-dev librsync-dev git-core python-dev python-setuptools librsync1 python-lockfile python-pip 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'apt-get install util-linux wget dialog libc6 python build-essential libxslt1-dev libxml2-dev librsync-dev git-core python-dev python-setuptools librsync1 python-lockfile python-pip' failed." 
+        lerror "'apt-get install util-linux wget dialog libc6 python build-essential libxslt1-dev libxml2-dev librsync-dev git-core python-dev python-setuptools librsync1 python-lockfile python-pip' failed."
         exit 1
     fi
-    
+
     mkdir -p '/usr/local/cloudvps-boss/source/duplicity'
     if [[ "$?" -ne 0 ]]; then
-        lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed." 
+        lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed."
         exit 1
     fi
 
@@ -180,10 +180,10 @@ EOF
 
     PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed." 
+        lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed."
         exit 1
     fi
-    
+
     if [[ ! -d "/usr/local/cloudvps-boss/duplicity" ]]; then
         mkdir -p "/usr/local/cloudvps-boss/duplicity"
         if [[ $? -ne 0 ]]; then
@@ -194,19 +194,19 @@ EOF
 
     get_file "/usr/local/cloudvps-boss/duplicity.tar.gz" "${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz" 2>&1
     if [[ "$?" -ne 0 ]]; then
-        lerror "'Downloading ${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz to /usr/local/cloudvps-boss/duplicity.tar.gz failed." 
+        lerror "'Downloading ${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz to /usr/local/cloudvps-boss/duplicity.tar.gz failed."
         exit 1
     fi
 
     tar --extract --file="/usr/local/cloudvps-boss/duplicity.tar.gz" --directory="/usr/local/cloudvps-boss/duplicity/" 2>&1
     if [[ "$?" -ne 0 ]]; then
-        lerror "'tar --extract --file=\"/usr/local/cloudvps-boss/duplicity.tar.gz\" --directory=\"/usr/local/cloudvps-boss/duplicity/\"' failed." 
+        lerror "'tar --extract --file=\"/usr/local/cloudvps-boss/duplicity.tar.gz\" --directory=\"/usr/local/cloudvps-boss/duplicity/\"' failed."
         exit 1
     fi
 
     DUPLICITY_SOURCE_FOLDER=$(find /usr/local/cloudvps-boss/duplicity/ -maxdepth 1 -iname 'duplicity-*' -type d | sort -n | tail -n 1)
     if [[ "$?" -ne 0 ]]; then
-        lerror "Source folder in /usr/local/cloudvps-boss/duplicity/ not found." 
+        lerror "Source folder in /usr/local/cloudvps-boss/duplicity/ not found."
         exit 1
     fi
 
@@ -214,7 +214,7 @@ EOF
 
     SETUP_INSTALL="$(python2 setup.py install 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing Duplicity: 'python2 setup.py install' failed." 
+        lerror "Error installing Duplicity: 'python2 setup.py install' failed."
         exit 1
     fi
     popd
@@ -226,27 +226,27 @@ install_duplicity_debian_8() {
 
     #swiftclient is not in precise :(
     if [[ "${DISTRO_VERSION}" == "12.04" ]]; then
-        APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)" 
+        APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)"
         if [[ "$?" -ne 0 ]]; then
-            lerror "'apt-get update' failed." 
+            lerror "'apt-get update' failed."
             exit 1
         fi
 
-        APT_INSTALL_SOFTPROP="$(apt-get -qq -y --force-yes install software-properties-common python-software-properties > /dev/null 2>&1)" 
+        APT_INSTALL_SOFTPROP="$(apt-get -qq -y --force-yes install software-properties-common python-software-properties > /dev/null 2>&1)"
         if [[ "$?" -ne 0 ]]; then
-            lerror "'apt-get install software-properties-common python-software-properties' failed." 
+            lerror "'apt-get install software-properties-common python-software-properties' failed."
             exit 1
         fi
 
-        APT_ADD_REPO_STACK="$(add-apt-repository --yes cloud-archive:icehouse > /dev/null 2>&1)" 
+        APT_ADD_REPO_STACK="$(add-apt-repository --yes cloud-archive:icehouse > /dev/null 2>&1)"
         if [[ "$?" -ne 0 ]]; then
-            lerror "'add-apt-repository cloud-archive:icehouse' failed." 
+            lerror "'add-apt-repository cloud-archive:icehouse' failed."
             exit 1
-        fi        
-           
+        fi
+
         mkdir -p '/usr/local/cloudvps-boss/source/duplicity'
         if [[ "$?" -ne 0 ]]; then
-            lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed." 
+            lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed."
             exit 1
         fi
 
@@ -258,7 +258,7 @@ EOF
 
         PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
         if [[ "$?" -ne 0 ]]; then
-            lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed." 
+            lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed."
             exit 1
         fi
 
@@ -268,7 +268,7 @@ EOF
     if [[ "${DISTRO_VERSION}" == "14.04" ]]; then
         mkdir -p '/usr/local/cloudvps-boss/source/duplicity'
         if [[ "$?" -ne 0 ]]; then
-            lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed." 
+            lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed."
             exit 1
         fi
 
@@ -280,37 +280,37 @@ EOF
 
         PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
         if [[ "$?" -ne 0 ]]; then
-            lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed." 
-            exit 1
-        fi
-    fi
-    
-    if [[ "${DISTRO_VERSION}" == "16.04" || "${DISTRO_VERSION}" == "15.04" || "${DISTRO_VERSION}" == "15.10" || "${DISTRO_VERSION}" == "16.10" || "${DISTRO_VERSION}" == "17.04" ]]; then
-        APT_INSTALL="$(apt-get -qq -y --force-yes install python-fasteners 2>&1)"
-        if [[ "$?" -ne 0 ]]; then
-            lerror "'apt-get install python-fasteners' failed." 
+            lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed."
             exit 1
         fi
     fi
 
-    APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)" 
+    if [[ "${DISTRO_VERSION}" == "16.04" || "${DISTRO_VERSION}" == "15.04" || "${DISTRO_VERSION}" == "15.10" || "${DISTRO_VERSION}" == "16.10" || "${DISTRO_VERSION}" == "17.04" || "${DISTRO_VERSION}" == "17.10" || "${DISTRO_VERSION}" == "9" || "${DISTRO_VERSION}" == "18.04" ]]; then
+        APT_INSTALL="$(apt-get -qq -y --force-yes install python-fasteners 2>&1)"
+        if [[ "$?" -ne 0 ]]; then
+            lerror "'apt-get install python-fasteners' failed."
+            exit 1
+        fi
+    fi
+
+    APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'apt-get update' failed." 
+        lerror "'apt-get update' failed."
         exit 1
     fi
 
     APT_INSTALL="$(apt-get -qq -y --force-yes install util-linux wget dialog libc6 python build-essential libxslt1-dev libxml2-dev librsync-dev git-core python-dev python-setuptools librsync1 python-lockfile python-pip python-keystoneclient python-swiftclient 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'apt-get install util-linux wget dialog libc6 python build-essential libxslt1-dev libxml2-dev librsync-dev git-core python-dev python-setuptools librsync1 python-lockfile python-pip python-keystoneclient python-swiftclient' failed." 
+        lerror "'apt-get install util-linux wget dialog libc6 python build-essential libxslt1-dev libxml2-dev librsync-dev git-core python-dev python-setuptools librsync1 python-lockfile python-pip python-keystoneclient python-swiftclient' failed."
         exit 1
     fi
-    
+
     mkdir -p '/usr/local/cloudvps-boss/source/duplicity'
     if [[ "$?" -ne 0 ]]; then
-        lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed." 
+        lerror "'mkdir -p /usr/local/cloudvps-boss/source/duplicity' failed."
         exit 1
     fi
-    
+
     if [[ ! -d "/usr/local/cloudvps-boss/duplicity" ]]; then
         mkdir -p "/usr/local/cloudvps-boss/duplicity"
         if [[ $? -ne 0 ]]; then
@@ -321,19 +321,19 @@ EOF
 
     get_file "/usr/local/cloudvps-boss/duplicity.tar.gz" "${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz" 2>&1
     if [[ "$?" -ne 0 ]]; then
-        lerror "'Downloading ${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz to /usr/local/cloudvps-boss/duplicity.tar.gz failed." 
+        lerror "'Downloading ${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz to /usr/local/cloudvps-boss/duplicity.tar.gz failed."
         exit 1
     fi
 
     tar --extract --file="/usr/local/cloudvps-boss/duplicity.tar.gz" --directory="/usr/local/cloudvps-boss/duplicity/" 2>&1
     if [[ "$?" -ne 0 ]]; then
-        lerror "'tar --extract --file=\"/usr/local/cloudvps-boss/duplicity.tar.gz\" --directory=\"/usr/local/cloudvps-boss/duplicity/\"' failed." 
+        lerror "'tar --extract --file=\"/usr/local/cloudvps-boss/duplicity.tar.gz\" --directory=\"/usr/local/cloudvps-boss/duplicity/\"' failed."
         exit 1
     fi
 
     DUPLICITY_SOURCE_FOLDER=$(find /usr/local/cloudvps-boss/duplicity/ -maxdepth 1 -iname 'duplicity-*' -type d | sort -n | tail -n 1)
     if [[ "$?" -ne 0 ]]; then
-        lerror "Source folder in /usr/local/cloudvps-boss/duplicity/ not found." 
+        lerror "Source folder in /usr/local/cloudvps-boss/duplicity/ not found."
         exit 1
     fi
 
@@ -341,7 +341,7 @@ EOF
 
     SETUP_INSTALL="$(python2 setup.py install 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing Duplicity: 'python2 setup.py install' failed." 
+        lerror "Error installing Duplicity: 'python2 setup.py install' failed."
         exit 1
     fi
     popd
@@ -349,40 +349,40 @@ EOF
 }
 
 install_duplicity_centos_6() {
-        
+
     YUM_CLEAN="$(yum -q -y clean all 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'yum clean all' failed." 
+        lerror "'yum clean all' failed."
         exit 1
     fi
 
     YUM_UPDATE="$(yum -q -y update 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'yum update' failed." 
+        lerror "'yum update' failed."
         exit 1
     fi
-    
+
     YUM_DEVEL_OUTPUT=$(yum -q -y --disablerepo="*" --disableexcludes=main --enablerepo="base" --enablerepo="updates" groupinstall "Development Tools" 2>&1)
     if [[ "$?" -ne 0 ]]; then
-        lerror "'yum --disablerepo=\"*\" --disableexcludes=main --enablerepo=\"base\" --enablerepo=\"updates\" groupinstall \"Development Tools\"' failed." 
+        lerror "'yum --disablerepo=\"*\" --disableexcludes=main --enablerepo=\"base\" --enablerepo=\"updates\" groupinstall \"Development Tools\"' failed."
         exit 1
     fi
-    
+
     YUM_INSTALL_BASE_OUTPUT="$(yum -q -y --disablerepo="*" --disableexcludes=main --enablerepo="base" --enablerepo="updates" install rpm-build gettext screen libxslt-python libxslt-devel python-devel python-setuptools python python-lxml wget git dialog 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'yum -q -y --disablerepo=\"*\" --disableexcludes=main --enablerepo=\"base\" --enablerepo=\"updates\" install rpm-build gettext screen libxslt-python libxslt-devel python-devel python-setuptools python python-lxml wget git dialog' failed." 
+        lerror "'yum -q -y --disablerepo=\"*\" --disableexcludes=main --enablerepo=\"base\" --enablerepo=\"updates\" install rpm-build gettext screen libxslt-python libxslt-devel python-devel python-setuptools python python-lxml wget git dialog' failed."
         exit 1
     fi
-    
+
     YUM_INSTALL_EPEL2_OUTPUT="$(yum -q -y --disablerepo="*" --disableexcludes=main --enablerepo="epel" install librsync-devel librsync python-lockfile python-pip 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'yum -q -y --disablerepo=\"*\" --disableexcludes=main --enablerepo=\"epel\" install librsync-devel librsync python-lockfile python-pip' failed." 
+        lerror "'yum -q -y --disablerepo=\"*\" --disableexcludes=main --enablerepo=\"epel\" install librsync-devel librsync python-lockfile python-pip' failed."
         exit 1
     fi
 
     mkdir -p '/usr/local/cloudvps-boss/duplicity'
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error creating Duplicity source folder." 
+        lerror "Error creating Duplicity source folder."
         exit 1
     fi
 
@@ -420,14 +420,14 @@ requests==2.9.1
 six==1.10.0
 stevedore==1.10.0
 urlgrabber==3.9.1
-wrapt==1.10.6   
-fasteners==0.14.1 
+wrapt==1.10.6
+fasteners==0.14.1
 EOF
 
 
     PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed." 
+        lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed."
         exit 1
     fi
 
@@ -441,32 +441,32 @@ EOF
 
     get_file "/usr/local/cloudvps-boss/duplicity.tar.gz" "${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz" 2>&1
     if [[ "$?" -ne 0 ]]; then
-        lerror "downloading ${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz to /usr/local/cloudvps-boss/duplicity.tar.gz failed" 
+        lerror "downloading ${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz to /usr/local/cloudvps-boss/duplicity.tar.gz failed"
         exit 1
     fi
 
     tar --extract --file="/usr/local/cloudvps-boss/duplicity.tar.gz" --directory="/usr/local/cloudvps-boss/duplicity/" 2>&1
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error extracting Duplicity source" 
+        lerror "Error extracting Duplicity source"
         exit 1
     fi
 
     DUPLICITY_SOURCE_FOLDER="$(find /usr/local/cloudvps-boss/duplicity/ -maxdepth 1 -iname 'duplicity-*' -type d | sort -n | tail -n 1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error locating Duplicity source folder." 
+        lerror "Error locating Duplicity source folder."
         exit 1
     fi
 
     pushd "${DUPLICITY_SOURCE_FOLDER}"
-    
+
     SETUP_INSTALL="$(python2 setup.py install 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing Duplicity." 
+        lerror "Error installing Duplicity."
         exit 1
     fi
-    
-    popd 
-    
+
+    popd
+
     if [[ ! -f "/etc/profile.d/duplicity" ]]; then
         touch "/etc/profile.d/duplicity"
         echo "PATH=/usr/local/bin:$PATH" > "/etc/profile.d/duplicity"
@@ -477,31 +477,31 @@ install_duplicity_centos_7() {
 
     YUM_CLEAN="$(yum -q -y clean all 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error cleaning yum." 
+        lerror "Error cleaning yum."
         exit 1
     fi
-        
+
     YUM_UPDATE="$(yum -q -y update 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error updating packages." 
+        lerror "Error updating packages."
         exit 1
     fi
-    
+
     YUM_DEVEL_OUTPUT=$(yum -q -y --disablerepo="*" --disableexcludes=main --enablerepo="base" --enablerepo="updates" groupinstall "Development Tools" 2>&1)
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing development tools. Make sure base repository is enabled." 
+        lerror "Error installing development tools. Make sure base repository is enabled."
         exit 1
     fi
-    
+
     YUM_INSTALL_BASE_OUTPUT="$(yum -q -y --disablerepo="*" --disableexcludes=main --enablerepo="base" --enablerepo="updates" install screen rpm-build gettext libxslt-python libxslt-devel python-lxml wget git dialog python-devel 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing required packages from base." 
+        lerror "Error installing required packages from base."
         exit 1
     fi
-    
+
     YUM_INSTALL_EPEL_OUTPUT="$(yum -q -y --disablerepo="*"  --disableexcludes=main --enablerepo="epel" install librsync-devel librsync python-lockfile python-pip 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing required packages from epel." 
+        lerror "Error installing required packages from epel."
         exit 1
     fi
 
@@ -559,38 +559,38 @@ EOF
 
     PIP_REQ="$(pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed." 
+        lerror "Error installing dependencies with pip: 'pip install --upgrade --requirement /usr/local/cloudvps-boss/requirements.txt' failed."
         exit 1
     fi
-    
+
     get_file "/usr/local/cloudvps-boss/duplicity.tar.gz" "${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz" 2>&1
     if [[ "$?" -ne 0 ]]; then
-        lerror "downloading ${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz to /usr/local/cloudvps-boss/duplicity.tar.gz failed." 
+        lerror "downloading ${DL_SRV}/duplicity/duplicity-${DUPLICITY_VERSION}.tar.gz to /usr/local/cloudvps-boss/duplicity.tar.gz failed."
         exit 1
     fi
 
     tar --extract --file="/usr/local/cloudvps-boss/duplicity.tar.gz" --directory="/usr/local/cloudvps-boss/duplicity/" 2>&1
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error extracting Duplicity source" 
+        lerror "Error extracting Duplicity source"
         exit 1
     fi
 
     DUPLICITY_SOURCE_FOLDER="$(find /usr/local/cloudvps-boss/duplicity/ -maxdepth 1 -iname 'duplicity-*' -type d | sort -n | tail -n 1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error locating Duplicity source folder." 
+        lerror "Error locating Duplicity source folder."
         exit 1
     fi
 
     pushd "${DUPLICITY_SOURCE_FOLDER}"
-    
+
     SETUP_INSTALL="$(python2 setup.py install 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "Error installing Duplicity." 
+        lerror "Error installing Duplicity."
         exit 1
     fi
-    
-    popd 
-    
+
+    popd
+
     if [[ ! -f "/etc/profile.d/duplicity" ]]; then
         touch "/etc/profile.d/duplicity"
         echo "PATH=/usr/local/bin:$PATH" > "/etc/profile.d/duplicity"
@@ -619,9 +619,13 @@ DISTRO_VERSION=$(distro_version version)
 lecho "Compiling Duplicity ${DUPLICITY_VERSION}."
 
 case "${DISTRO_NAME}" in
-    
+
     "Debian")
         case "${DISTRO_VERSION}" in
+            9)
+                lecho "Debian 9"
+                install_duplicity_debian_8
+                ;;
             8)
                 lecho "Debian 8"
                 install_duplicity_debian_8

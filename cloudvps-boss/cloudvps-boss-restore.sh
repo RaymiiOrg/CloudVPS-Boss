@@ -1,24 +1,24 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2018 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
-# 
-# This program is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2 of the License, or (at your 
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
-# with this program; if not, write to the Free Software Foundation, Inc., 
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-# 
+#
 
-VERSION="1.9.12"
+VERSION="1.9.17"
 TITLE="CloudVPS Boss Recovery ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -71,9 +71,9 @@ if [[ "${RESTORE_TYPE}" == 1 ]]; then
     ORIGINAL_PATH=$(cat /tmp/${PID}.original-path && rm /tmp/${PID}.original-path)
 
     check_choice ORIGINAL_PATH "Original path"
-    
+
     dialog --title "${TITLE} - Restore Path" --menu "${DIALOG_11_MESSAGE}" 0 0 0 "1" "Original location (${ORIGINAL_PATH})"  "2" "/var/restore.${PID}/" 2> "/tmp/${PID}.restore-path-choice"
- 
+
     RESTORE_PATH_CHOICE=$(cat /tmp/${PID}.restore-path-choice && rm /tmp/${PID}.restore-path-choice)
 
     check_choice RESTORE_PATH_CHOICE "Restore path"
@@ -86,20 +86,20 @@ if [[ "${RESTORE_TYPE}" == 1 ]]; then
     fi
 
     dialog --title "${TITLE} - Restore from Date" --inputbox "${DIALOG_7_MESSAGE}" 0 0 2> "/tmp/${PID}.restore-datetime"
-    
+
     RESTORE_DATETIME=$(cat /tmp/${PID}.restore-datetime && rm /tmp/${PID}.restore-datetime)
-    
+
     check_choice RESTORE_DATETIME "Restore date/time"
-    
-    DIALOG_8_MESSAGE="Restoring file/folder \"$(dirname ${ORIGINAL_PATH})/$(basename ${ORIGINAL_PATH})\" from time ${RESTORE_DATETIME} for host ${HOSTNAME}.\n\nIt will be restored to ${RESTORE_PATH} .\nIf you want to cancel, press CTRL+C now. \nOtherwise, press return to continue." 
-    
+
+    DIALOG_8_MESSAGE="Restoring file/folder \"$(dirname ${ORIGINAL_PATH})/$(basename ${ORIGINAL_PATH})\" from time ${RESTORE_DATETIME} for host ${HOSTNAME}.\n\nIt will be restored to ${RESTORE_PATH} .\nIf you want to cancel, press CTRL+C now. \nOtherwise, press return to continue."
+
     dialog --title "${TITLE} - Restore" --msgbox "${DIALOG_8_MESSAGE}" 20 70
-    
+
     echo; echo; echo; echo; echo; echo;
     lecho "Restoring file/folder \"$(dirname ${ORIGINAL_PATH})/$(basename ${ORIGINAL_PATH})\" from time ${RESTORE_DATETIME} for host ${HOSTNAME}. It will be restored to ${RESTORE_PATH}. Date: $(date)."
 
     RELATIVE_PATH="${ORIGINAL_PATH:1}"
-    
+
     lecho "duplicity --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" ${ENCRYPTION_OPTIONS} ${CUSTOM_DUPLICITY_OPTIONS} --allow-source-mismatch --num-retries 100 --tempdir \"${TEMPDIR}\" -t ${RESTORE_DATETIME} --file-to-restore ${RELATIVE_PATH} ${BACKUP_BACKEND} \"/var/restore.${PID}\""
 
     OLD_IFS="${IFS}"
@@ -167,20 +167,20 @@ if [[ "${RESTORE_TYPE}" == 2 ]]; then
     MYSQL_DB_NAME="$(cat /tmp/${PID}.mysql-db-name && rm /tmp/${PID}.mysql-db-name)"
 
     check_choice MYSQL_DB_NAME "MySQL Database Name"
-    
+
     dialog --title "${TITLE} - Restore from Date" --inputbox "${DIALOG_7_MESSAGE}" 0 0 2> "/tmp/${PID}.restore-datetime"
-    
+
     RESTORE_DATETIME="$(cat /tmp/${PID}.restore-datetime && rm /tmp/${PID}.restore-datetime)"
-    
+
     check_choice RESTORE_DATETIME "Restore date/time"
-    
+
     DIALOG_9_MESSAGE="Restoring MySQL database ${MYSQL_DB_NAME} from time ${RESTORE_DATETIME} for host ${HOSTNAME}. \nIt will be restored to /var/restore.${PID} and then placed back in the MySQL server. \nIf you want to cancel, press CTRL+C now. \nOtherwise, press return to continue."
 
     dialog --title "${TITLE} - Restore" --msgbox "${DIALOG_9_MESSAGE}" 10 70
 
     echo; echo; echo; echo; echo; echo;
     lecho "Restoring MySQL database ${MYSQL_DB_NAME} from time ${RESTORE_DATETIME} for host ${HOSTNAME}. It will be restored to /var/restore.${PID} and then placed back in the MySQL server. Date: $(date)."
-    
+
     lecho "duplicity --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" ${ENCRYPTION_OPTIONS} ${CUSTOM_DUPLICITY_OPTIONS} --allow-source-mismatch --num-retries 100 --tempdir=\"${TEMPDIR}\" -t ${RESTORE_DATETIME} --file-to-restore var/backups/sql/${MYSQL_DB_NAME}.sql.gz ${BACKUP_BACKEND} \"/var/restore.${PID}.gz\""
 
     OLD_IFS="${IFS}"
@@ -207,13 +207,13 @@ if [[ "${RESTORE_TYPE}" == 2 ]]; then
         lecho ${line}
     done
     IFS="${OLD_IFS}"
-    
+
     gzip -f -d "/var/restore.${PID}.gz"
     if [[ "$?" != 0 ]]; then
         echo "Gunzip unsuccessful. Please check logging, path name and network connectivity."
         exit 1
     fi
-    
+
     DATABASE_EXISTS=$(mysql -e 'show databases;' | grep "${MYSQL_DB_NAME}")
 
     if [[ -z "${DATABASE_EXISTS}" ]]; then
@@ -231,7 +231,7 @@ if [[ "${RESTORE_TYPE}" == 2 ]]; then
         exit 1
     fi
     lecho "MySQL restore successfull."
-    
+
 fi
 
 if [[ "${RESTORE_TYPE}" == 3 ]]; then
@@ -244,13 +244,13 @@ if [[ "${RESTORE_TYPE}" == 3 ]]; then
     PSQL_DB_NAME=$(cat /tmp/${PID}.psql-db-name && rm /tmp/${PID}.psql-db-name)
 
     check_choice PSQL_DB_NAME "PSQL Database Name"
-    
+
     dialog --title "${TITLE} - Restore from Date" --inputbox "${DIALOG_7_MESSAGE}" 0 0 2> "/tmp/${PID}.restore-datetime"
-    
+
     RESTORE_DATETIME=$(cat /tmp/${PID}.restore-datetime && rm /tmp/${PID}.restore-datetime)
-    
+
     check_choice RESTORE_DATETIME "Restore date/time"
-    
+
     DIALOG_10_MESSAGE="Restoring PostgreSQL database ${PSQL_DB_NAME} from time ${RESTORE_DATETIME} for host ${HOSTNAME}. \nIt will be restored to /var/restore.${PID} and then placed back in the PostgreSQL server. \nIf you want to cancel, press CTRL+C now. \nOtherwise, press return to continue."
 
     dialog --title "${TITLE} - Restore" --msgbox "${DIALOG_10_MESSAGE}" 10 70
@@ -259,7 +259,7 @@ if [[ "${RESTORE_TYPE}" == 3 ]]; then
     lecho "Restoring PostgreSQL database ${PSQL_DB_NAME} from time ${RESTORE_DATETIME} for host ${HOSTNAME}. It will be restored to /var/restore.${PID} and then placed back in the PostgreSQL server. Date: $(date)."
 
     lecho "duplicity --file-prefix=\"${HOSTNAME}.\" --name=\"${HOSTNAME}.\" ${ENCRYPTION_OPTIONS} ${CUSTOM_DUPLICITY_OPTIONS} --allow-source-mismatch --num-retries 5 --tempdir=\"${TEMPDIR}\" -t ${RESTORE_DATETIME} --file-to-restore var/backups/sql/${PSQL_DB_NAME}.psql.gz ${BACKUP_BACKEND} \"/var/restore.${PID}.gz\""
-    
+
     OLD_IFS="${IFS}"
     IFS=$'\n'
     RESTORE_OUTPUT=$(duplicity \
@@ -284,13 +284,13 @@ if [[ "${RESTORE_TYPE}" == 3 ]]; then
         lecho ${line}
     done
     IFS="${OLD_IFS}"
-    
+
     gzip -f -d "/var/restore.${PID}.gz"
     if [[ $? -ne 0 ]]; then
         echo "Gunzip unsuccessful. Please check logging, path name and network connectivity."
         exit 1
     fi
-    
+
     chmod 777 /var/restore.${PID}
     if [[ -z "$(su postgres -c "psql -l | awk '{print $1}' | grep \"${PSQL_DB_NAME}\"")" ]]; then
         lecho "Database not found, creating empty DB"
@@ -311,7 +311,7 @@ if [[ "${RESTORE_TYPE}" == 3 ]]; then
     done
     IFS="${OLD_IFS}"
     lecho "PostgresSQL restore successfull."
-    
+
 fi
 
 lecho "${TITLE} ended on ${HOSTNAME} at $(date)."

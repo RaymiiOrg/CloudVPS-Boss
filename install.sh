@@ -1,26 +1,26 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2018 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
-# 
-# This program is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2 of the License, or (at your 
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
-# with this program; if not, write to the Free Software Foundation, Inc., 
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
 set -o pipefail
 
-VERSION="1.9.12"
+VERSION="1.9.17"
 TITLE="CloudVPS Boss Install ${VERSION}"
 
 if [[ ${DEBUG} == "1" ]]; then
@@ -63,7 +63,7 @@ if [[ ! -z "$1" ]]; then
 fi
 
 run_script() {
-    # check if $1 is a file and execute it with bash. 
+    # check if $1 is a file and execute it with bash.
     # log result and exit if script fails.
     if [[ -f "$1" ]]; then
         log "Starting $1"
@@ -71,7 +71,7 @@ run_script() {
         if [[ $? == 0 ]]; then
             logger -t "cloudvps-boss" -- "$1 completed."
         else
-            lerror "$1 did not exit cleanly." 
+            lerror "$1 did not exit cleanly."
             exit 1
         fi
     else
@@ -82,7 +82,7 @@ run_script() {
 command_exists() {
     # check if command exists and fai otherwise
     command -v "$1" >/dev/null 2>&1
-    if [[ $? -ne 0 ]]; then 
+    if [[ $? -ne 0 ]]; then
         lerror "I require $1 but it's not installed. Please install it. I've tried to install it but that failed. Aborting."
         exit 1
     fi
@@ -117,7 +117,7 @@ distro_version() {
 
 get_hostname() {
     # Try Openstack Metadata service first
-    HOSTNAME="$(curl -m 3 -s http://169.254.169.254/openstack/latest/meta_data.json | grep -o '\"uuid\": \"[^\"]*\"' | awk -F\" '{print $4}')" 
+    HOSTNAME="$(curl -m 3 -s http://169.254.169.254/openstack/latest/meta_data.json | grep -o '\"uuid\": \"[^\"]*\"' | awk -F\" '{print $4}')"
     if [[ -z "${HOSTNAME}" ]]; then
         # Otherwise XLS /var/fistboot
         if [[ -f "/var/firstboot/settings" ]]; then
@@ -133,26 +133,19 @@ get_hostname() {
 
 install_packages_debian() {
     lecho "Installing packages required for installation."
-    APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)" 
+    APT_UPDATE="$(apt-get -qq -y --force-yes update > /dev/null 2>&1)"
     if [[ "$?" -ne 0 ]]; then
-        lerror "'apt-get update' failed." 
+        lerror "'apt-get update' failed."
         exit 1
     fi
-    for PACKAGE in awk sed grep tar gzip which openssl curl wget screen vim haveged unattended-upgrades; do 
+    for PACKAGE in awk sed grep tar gzip which openssl curl wget screen vim haveged unattended-upgrades; do
         /usr/bin/apt-get -qq -y --force-yes -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" install "${PACKAGE}" >/dev/null 2>&1
-    done
-}
-
-install_packages_arch() {
-    lecho "Installing packages required for installation."
-    for PACKAGE in awk sed grep tar gzip which openssl curl wget screen vim haveged; do 
-        pacman -S --force --noconfirm --needed "${PACKAGE}" >/dev/null 2>&1 
     done
 }
 
 install_packages_centos() {
     lecho "Installing packages required for installation."
-    for PACKAGE in awk sed grep tar gzip which openssl curl wget screen vim haveged yum-cron; do 
+    for PACKAGE in awk sed grep tar gzip which openssl curl wget screen vim haveged yum-cron; do
         yum -q -y --disablerepo="*" --disableexcludes=main --enablerepo="base" --enablerepo="updates" install "${PACKAGE}" >/dev/null 2>&1
     done
 }
@@ -168,14 +161,6 @@ case "${DISTRO_NAME}" in
     "Ubuntu")
         lecho "Ubuntu ${DISTRO_VERSION}"
         install_packages_debian
-    ;;
-    "Arch")
-        lecho "Arch Linux"
-        install_packages_arch
-    ;;
-    "Fedora")
-        lecho "Fedora ${DISTRO_VERSION}"
-        install_packages_centos
     ;;
     "CentOS")
         lecho "CentOS ${DISTRO_VERSION}"
@@ -195,8 +180,8 @@ done
 if [[ -f "/etc/csf/csf.fignore" ]]; then
     # Add ourself to the csf file ignore list
     # lfd will not scan and mark us suspicious
-    if [[ ! "$(grep 'cloudvps-boss' /etc/csf/csf.fignore)" ]]; then   
-        lecho "Adding exceptions for lfd." 
+    if [[ ! "$(grep 'cloudvps-boss' /etc/csf/csf.fignore)" ]]; then
+        lecho "Adding exceptions for lfd."
         echo "/tmp/pip-build-root/*" >> /etc/csf/csf.fignore
         echo "/tmp/cloudvps-boss/*" >> /etc/csf/csf.fignore
         echo "/usr/local/cloudvps-boss/*" >> /etc/csf/csf.fignore
@@ -205,22 +190,22 @@ if [[ -f "/etc/csf/csf.fignore" ]]; then
     fi
     if [[ ! "$(grep '89.31.101.64' /etc/csf/csf.allow)" ]]; then
         # for regular iptables
-        #-A OUTPUT -d 89.31.101.64/27 ! -o lo -p tcp -m tcp --dport 443 -j ACCEPT 
+        #-A OUTPUT -d 89.31.101.64/27 ! -o lo -p tcp -m tcp --dport 443 -j ACCEPT
         # Add a rule for the CloudVPS object store to CSF
         lecho "Adding exceptions for csf."
         csf -a "tcp|out|d=443|d=89.31.101.64/27" "CloudVPS Boss Object Store for backup" 2>&1 > /dev/null
         service csf restart 2>&1 > /dev/null
         csf -r 2>&1 > /dev/null
-    fi    
+    fi
     if [[ ! "$(grep '31.3.100.121' /etc/csf/csf.allow)" ]]; then
         # for regular iptables
-        #-A OUTPUT -d 31.3.100.121/29 ! -o lo -p tcp -m tcp --dport 443 -j ACCEPT 
+        #-A OUTPUT -d 31.3.100.121/29 ! -o lo -p tcp -m tcp --dport 443 -j ACCEPT
         # Add a rule for the CloudVPS object store to CSF
         lecho "Adding exceptions for csf."
         csf -a "tcp|out|d=443|d=31.3.100.121/29" "CloudVPS Boss Object Store for backup 2" 2>&1 > /dev/null
         service csf restart 2>&1 > /dev/null
         csf -r 2>&1 > /dev/null
-    fi  
+    fi
 fi
 
 if [[ -d "/etc/cloudvps-boss" ]]; then
@@ -248,7 +233,7 @@ if [[ -d "/etc/cloudvps-boss" ]]; then
     fi
 fi
 
-for FOLDER in "/etc/cloudvps-boss/pre-backup.d" "/etc/cloudvps-boss/post-backup.d" "/etc/cloudvps-boss/post-fail-backup.d"; do 
+for FOLDER in "/etc/cloudvps-boss/pre-backup.d" "/etc/cloudvps-boss/post-backup.d" "/etc/cloudvps-boss/post-fail-backup.d"; do
     # create a few required folders
     if [[ ! -d "${FOLDER}" ]]; then
         mkdir -p "${FOLDER}"
@@ -271,7 +256,7 @@ for COPY_FILE in "README.md" "LICENSE.md" "CHANGELOG.md"; do
     fi
 done
 
-for COPY_FILE in "cloudvps-boss.cron" "backup.conf" "cloudvps-boss-encryption-setup.sh" "cloudvps-boss-list-current-files.sh" "cloudvps-boss-verify.sh" "cloudvps-boss-cleanup.sh" "cloudvps-boss-restore.sh" "cloudvps-boss.sh" "cloudvps-boss-stats.sh" "cloudvps-boss-update.sh" "common.sh" "exclude.conf" "uninstall.sh"; do
+for COPY_FILE in "cloudvps-boss.cron" "backup.conf" "cloudvps-boss-encryption-setup.sh" "cloudvps-boss-list-current-files.sh" "cloudvps-boss-verify.sh" "cloudvps-boss-cleanup.sh" "cloudvps-boss-restore.sh" "cloudvps-boss.sh" "cloudvps-boss-stats.sh" "cloudvps-boss-manual-full.sh" "cloudvps-boss-update.sh" "common.sh" "exclude.conf" "uninstall.sh"; do
     cp "cloudvps-boss/${COPY_FILE}" "/etc/cloudvps-boss/${COPY_FILE}"
     if [[ "$?" -ne 0 ]]; then
         lerror "Cannot copy cloudvps-boss/${COPY_FILE} to /etc/cloudvps-boss/${COPY_FILE}."
@@ -318,7 +303,7 @@ for SCRIPT in "install_duplicity.sh" "credentials.sh"; do
                     run_script "${SCRIPT}" "$1" "$2" "$3"
                 else
                    run_script "${SCRIPT}"
-                fi 
+                fi
             else
                 run_script "${SCRIPT}"
             fi
@@ -326,7 +311,7 @@ for SCRIPT in "install_duplicity.sh" "credentials.sh"; do
            run_script "${SCRIPT}"
         fi
     else
-        run_script "${SCRIPT}" 
+        run_script "${SCRIPT}"
     fi
 done
 
@@ -357,7 +342,7 @@ if [[ ! -d "/usr/local/bin" ]]; then
     mkdir -p "/usr/local/bin"
 fi
 
-for COMMAND in "cloudvps-boss.sh" "cloudvps-boss-restore.sh" "cloudvps-boss-stats.sh" "cloudvps-boss-update.sh" "cloudvps-boss-cleanup.sh" "cloudvps-boss-list-current-files.sh"; do
+for COMMAND in "cloudvps-boss.sh" "cloudvps-boss-restore.sh" "cloudvps-boss-stats.sh" "cloudvps-boss-update.sh" "cloudvps-boss-list-current-files.sh" "cloudvps-boss-manual-full.sh"; do
     log "Creating symlink for /etc/cloudvps-boss/${COMMAND} in /usr/local/bin/${COMMAND%.sh}."
     chmod +x "/etc/cloudvps-boss/${COMMAND}"
     ln -fs "/etc/cloudvps-boss/${COMMAND}" "/usr/local/bin/${COMMAND%.sh}"

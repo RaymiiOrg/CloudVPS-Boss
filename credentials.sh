@@ -1,26 +1,26 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2018 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
-# 
-# This program is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2 of the License, or (at your 
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
-# with this program; if not, write to the Free Software Foundation, Inc., 
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-# 
+#
 
 set -o pipefail
 
-VERSION="1.9.12"
+VERSION="1.9.17"
 TITLE="CloudVPS Boss Credentials Config ${VERSION}"
 
 if [[ ${DEBUG} == "1" ]]; then
@@ -69,7 +69,7 @@ fi
 
 if [[ -f "/etc/cloudvps-boss/auth.conf" ]]; then
     lecho "/etc/cloudvps-boss/auth.conf already exists. Not overwriting it"
-    exit 
+    exit
 fi
 
 if [[ "${1}" == "help" ]]; then
@@ -111,7 +111,7 @@ else
 fi
 
 if [[ -z "${TENANT_ID}" ]]; then
-    lerror "Tenant ID could not be found. Check username, password or network connectivity." 
+    lerror "Tenant ID could not be found. Check username, password or network connectivity."
     exit 1
 fi
 
@@ -171,4 +171,4 @@ if [[ $? == 60 ]]; then
     lecho "Curl error Peer certificate cannot be authenticated with known CA certificates."
     lecho "This is probably CentOS 5. CentOS 5 is deprecated. Exiting"
     exit 1
-fi 
+fi

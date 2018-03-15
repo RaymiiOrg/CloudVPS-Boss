@@ -1,25 +1,25 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2018 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
-# 
-# This program is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2 of the License, or (at your 
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
-# with this program; if not, write to the Free Software Foundation, Inc., 
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-# 
+#
 
 
-VERSION="1.9.12"
+VERSION="1.9.17"
 TITLE="CloudVPS Boss MySQL Backup ${VERSION}"
 
 if [[ ! -f "/etc/cloudvps-boss/common.sh" ]]; then
@@ -48,7 +48,7 @@ failed_mail() {
 
 Dear user,
 
-This is a message to inform you that your MySQL database backup to the CloudVPS 
+This is a message to inform you that your MySQL database backup to the CloudVPS
 Object Store has not succeeded on date: $(date) (server date/time).
 
 This is because the MySQL credentials for the administrative user are incorrect. These credentials are stored in the file /root/.my.cnf. Please check these credentials and update them if needed.
@@ -133,12 +133,12 @@ if [[ ! -f "/root/.my.cnf" ]]; then
         MYSQL_USER="$(grep user < /usr/local/ispconfig/server/lib/mysql_clientdb.conf | awk '{print $3'} | sed "s/[';]//g")"
         MYSQL_PASSWORD="$(grep password < /usr/local/ispconfig/server/lib/mysql_clientdb.conf | awk '{print $3'} | sed "s/[';]//g")"
     fi
-    
+
     if [[ "${MYSQL_USER}" == "none" ]]; then
         lerror "Could not find MySQL username. Please add it to /root/.my.cnf to make MySQL backups work."
     fi
     if [[ "${MYSQL_PASSWORD}" == "none" ]]; then
-        lerror "Could not find MySQL password. Please add it to /root/.my.cnf to make MySQL backups work." 
+        lerror "Could not find MySQL password. Please add it to /root/.my.cnf to make MySQL backups work."
     fi
 
     cat << EOF > /root/.my.cnf

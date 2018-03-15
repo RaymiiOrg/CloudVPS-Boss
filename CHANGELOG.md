@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.9.17
+
+- Update Duplicity to 0.7.17
+
+## 1.9.16
+
+- Add support for Debian 9
+
+## 1.9.16
+
+- Update Duplicity to 0.7.16
+
+## 1.9.13
+
+- Update Duplicity to 0.7.15
+- Add manual full backup command
+
 ## 1.9.12
 
 - Update Duplicity to 0.7.14
@@ -16,7 +33,7 @@
 ## 1.9.10
 
 - Update Duplicity to 0.7.10
-- Do not run fail scripts after a failed cleanup. 
+- Do not run fail scripts after a failed cleanup.
 
 ## 1.9.9
 

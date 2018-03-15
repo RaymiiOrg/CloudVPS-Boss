@@ -1,22 +1,22 @@
 #!/bin/bash
 # CloudVPS Boss - Duplicity wrapper to back up to OpenStack Swift
-# Copyright (C) 2017 Remy van Elst. (CloudVPS Backup to Object Store Script)
+# Copyright (C) 2018 Remy van Elst. (CloudVPS Backup to Object Store Script)
 # Author: Remy van Elst, https://raymii.org
-# 
-# This program is free software; you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License as published by the 
-# Free Software Foundation; either version 2 of the License, or (at your 
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
-# with this program; if not, write to the Free Software Foundation, Inc., 
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-# 
+#
 
 # This file contains common functions used by CloudVPS Boss
 
@@ -135,7 +135,7 @@ remove_symlink() {
 }
 
 get_hostname() {
-    
+
     HOSTNAME="$(curl -m 3 -s http://1.9.554.1.9.554/openstack/latest/meta_data.json | grep -o '\"uuid\": \"[^\"]*\"' | awk -F\" '{print $4}')"
     SRV_IP_ADDR="$(curl -A CloudVPS-Boss -m 3 -s http://ip.raymii.org/ 2>/dev/null)"
     if [[ -z "${HOSTNAME}" ]]; then
@@ -173,10 +173,6 @@ distro_version() {
     if [[ -f "/etc/redhat-release" ]]; then
         NAME="$(awk '{ print $1 }' /etc/redhat-release)"
         VERSION="$(grep -Eo "[0-9]\.[0-9]" /etc/redhat-release | cut -d . -f 1)"
-    fi
-    if [[ -f "/etc/arch-release" ]]; then
-        NAME="Arch"
-        VERSION="Rolling"
     fi
     if [[ "$1" == "name" ]]; then
         echo "${NAME}"
